@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,42 +13,27 @@
    <children>
       <Button fx:id="start_simulation_button" layoutX="840.0" layoutY="50.0" mnemonicParsing="false" onAction="#Start_Simulation_Button_Click" text="Запуск симуляции" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="50.0" />
       <Button fx:id="build_map_button" layoutX="835.0" layoutY="725.0" mnemonicParsing="false" onAction="#Begin_Changes_Button_Click" text="Редактировать поле" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="40.0" />
-      <ImageView fx:id="image_apple" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="530.0" onMouseClicked="#ChooseApple" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="325.0" AnchorPane.rightAnchor="91.0">
+      <ImageView fx:id="image_apple" fitHeight="45.0" fitWidth="45.0" layoutX="1013.0" layoutY="680.0" onMouseClicked="#ChooseApple" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="175.0" AnchorPane.rightAnchor="45.0">
          <image>
             <Image url="@images/apple_on_grass.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="image_water" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="582.0" onMouseClicked="#ChooseWater" onMouseEntered="#WaterHintAppear" onMouseExited="#WaterHintDisappear" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="137.0">
+      <ImageView fx:id="image_water" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="582.0" onMouseClicked="#ChooseWater" onMouseEntered="#WaterHintAppear" onMouseExited="#WaterHintDisappear" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="137.0">
          <image>
             <Image url="@images/water.jpg" />
          </image>
       </ImageView>
-      <ImageView fx:id="image_grass" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="530.0" onMouseClicked="#ChooseGrass" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="325.0" AnchorPane.rightAnchor="137.0">
+      <ImageView fx:id="image_grass" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="630.0" onMouseClicked="#ChooseGrass" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="225.0" AnchorPane.rightAnchor="91.0">
          <image>
             <Image url="@images/grass.jpg" />
          </image>
       </ImageView>
-      <ImageView fx:id="image_anthill" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="582.0" onMouseClicked="#ChooseAnthill" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="91.0">
-         <image>
-            <Image url="@images/anthill.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="image_ant_worker" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="633.0" onMouseClicked="#ChooseAntWorker" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="225.0" AnchorPane.rightAnchor="137.0">
-         <image>
-            <Image url="@images/ant_worker.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="image_ant_fighter" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="633.0" onMouseClicked="#ChooseAntFighter" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="225.0" AnchorPane.rightAnchor="91.0">
-         <image>
-            <Image url="@images/ant_fighter.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="image_insect_flower" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="685.0" onMouseClicked="#ChooseInsectFlower" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="175.0" AnchorPane.rightAnchor="91.0">
+      <ImageView fx:id="image_insect_flower" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="685.0" onMouseClicked="#ChooseInsectFlower" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="175.0" AnchorPane.rightAnchor="91.0">
          <image>
             <Image url="@images/infected_plant.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="image_flower" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="680.0" onMouseClicked="#ChooseFlower" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="175.0" AnchorPane.rightAnchor="137.0">
+      <ImageView fx:id="image_flower" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="680.0" onMouseClicked="#ChooseFlower" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="175.0" AnchorPane.rightAnchor="137.0">
          <image>
             <Image url="@images/plant.png" />
          </image>
@@ -98,9 +84,22 @@
             <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
+         <effect>
+            <InnerShadow height="0.0" radius="0.0" width="0.0" />
+         </effect>
       </GridPane>
       <Button fx:id="exit_simulation_button" layoutX="938.0" layoutY="127.0" mnemonicParsing="false" text="Завершить симуляцию" visible="false" AnchorPane.rightAnchor="25.0" />
       <Button fx:id="auto_mode_button" layoutX="996.0" layoutY="93.0" mnemonicParsing="false" text="Авто мод" visible="false" />
       <Button fx:id="step_button" layoutX="945.0" layoutY="93.0" mnemonicParsing="false" text="Шаг" visible="false" />
+      <ImageView fx:id="image_stick" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="635.0" onMouseClicked="#ChooseStick" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="225.0" AnchorPane.rightAnchor="137.0">
+         <image>
+            <Image url="@images/stick.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="image_anthill" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="580.0" onMouseClicked="#ChooseAnthill" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="91.0">
+         <image>
+            <Image url="@images/anthill.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
