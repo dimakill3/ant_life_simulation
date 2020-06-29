@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane fx:id="main_window" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <Button fx:id="start_simulation_button" layoutX="840.0" layoutY="50.0" mnemonicParsing="false" onAction="#Start_Simulation_Button_Click" text="Запуск симуляции" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="50.0" />
+      <Button fx:id="build_map_button" layoutX="835.0" layoutY="725.0" mnemonicParsing="false" onAction="#Begin_Changes_Button_Click" text="Редактировать поле" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="40.0" />
+      <ImageView fx:id="image_apple" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="530.0" onMouseClicked="#ChooseApple" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="325.0" AnchorPane.rightAnchor="91.0">
+         <image>
+            <Image url="@images/apple_on_grass.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="image_water" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="582.0" onMouseClicked="#ChooseWater" onMouseEntered="#WaterHintAppear" onMouseExited="#WaterHintDisappear" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="137.0">
+         <image>
+            <Image url="@images/water.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="image_grass" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="530.0" onMouseClicked="#ChooseGrass" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="325.0" AnchorPane.rightAnchor="137.0">
+         <image>
+            <Image url="@images/grass.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="image_anthill" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="582.0" onMouseClicked="#ChooseAnthill" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="91.0">
+         <image>
+            <Image url="@images/anthill.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="image_ant_worker" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="633.0" onMouseClicked="#ChooseAntWorker" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="225.0" AnchorPane.rightAnchor="137.0">
+         <image>
+            <Image url="@images/ant_worker.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="image_ant_fighter" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="633.0" onMouseClicked="#ChooseAntFighter" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="225.0" AnchorPane.rightAnchor="91.0">
+         <image>
+            <Image url="@images/ant_fighter.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="image_insect_flower" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="685.0" onMouseClicked="#ChooseInsectFlower" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="175.0" AnchorPane.rightAnchor="91.0">
+         <image>
+            <Image url="@images/infected_plant.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="image_flower" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="680.0" onMouseClicked="#ChooseFlower" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="175.0" AnchorPane.rightAnchor="137.0">
+         <image>
+            <Image url="@images/plant.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="apply_map_button" layoutX="864.0" layoutY="670.0" mnemonicParsing="false" onAction="#Apply_Changes_Button_Click" text="Применить" visible="false" AnchorPane.bottomAnchor="105.0" AnchorPane.rightAnchor="65.0" />
+      <GridPane fx:id="main_scene" onMouseMoved="#CellClick" prefHeight="900.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+            <ColumnConstraints minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+      </GridPane>
+   </children>
+</AnchorPane>
