@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
@@ -28,7 +29,7 @@ public class Controller {
     private int filling_block = 0;
     private int[][] main_array = new int[Scene_blocks][Scene_blocks];
     private InnerShadow night = new InnerShadow();
-    Pair<String, Integer>[] objects_id = new Pair[10];
+    private boolean auto_mod = false;
 
     @FXML
     private ResourceBundle resources;
@@ -83,16 +84,14 @@ public class Controller {
 
     @FXML
     void ChooseApple(MouseEvent event) {
-        img_url = "/sample/images/apple_on_grass.png";
-        filling_picture = new Image(img_url, 45, 45, true, false);
+        filling_picture = blocks.apple.picture;
         filling_block = blocks.apple.number;
     }
 
 /////////////////
     @FXML
     void ChooseWater(MouseEvent event) {
-        img_url = "/sample/images/water.jpg";
-        filling_picture = new Image(img_url, 45, 45, true, false);
+        filling_picture = blocks.water.picture;
         filling_block = blocks.water.number;
     }
 
@@ -110,36 +109,31 @@ public class Controller {
 
     @FXML
     void ChooseAnthill(MouseEvent event) {
-        img_url = "/sample/images/anthill.png";
-        filling_picture = new Image(img_url, 45, 45, true, false);
+        filling_picture = blocks.anthill.picture;
         filling_block = blocks.anthill.number;
     }
 
     @FXML
     void ChooseFlower(MouseEvent event) {
-        img_url = "/sample/images/plant.png";
-        filling_picture = new Image(img_url, 45, 45, true, false);
+        filling_picture = blocks.plant.picture;
         filling_block = blocks.plant.number;
     }
 
     @FXML
     void ChooseGrass(MouseEvent event) {
-        img_url = "/sample/images/grass.jpg";
-        filling_picture = new Image(img_url, 45, 45, true, false);
+        filling_picture = blocks.grass.picture;
         filling_block = blocks.grass.number;
     }
 
     @FXML
     void ChooseStick(MouseEvent event) {
-        img_url = "/sample/images/stick.png";
-        filling_picture = new Image(img_url, 45, 45, true, false);
+        filling_picture = blocks.stick.picture;
         filling_block = blocks.stick.number;
     }
 
     @FXML
     void ChooseInsectFlower(MouseEvent event) {
-        img_url = "/sample/images/infected_plant.png";
-        filling_picture = new Image(img_url, 45, 45, true, false);
+        filling_picture = blocks.infected_plant.picture;
         filling_block = blocks.infected_plant.number;
     }
 
@@ -187,6 +181,55 @@ public class Controller {
 
     @FXML
     void Start_Simulation_Button_Click(ActionEvent event) {
+        boolean got_anthill = false;
+        for(int i = 0; i < Scene_blocks; i++)
+            for(int j = 0; j < Scene_blocks; j++)
+                if(main_array[i][j] == blocks.anthill.number)
+                {
+                    got_anthill = true;
+                    break;
+                }
+
+        if(got_anthill == false)
+        {
+            Alert error = new Alert(Alert.AlertType.ERROR, "Симуляция невозможна без муравейника");
+            error.showAndWait();
+            return;
+        }
+
+        start_simulation_button.setVisible(false);
+        build_map_button.setVisible(false);
+
+        exit_simulation_button.setVisible(true);
+        step_button.setVisible(true);
+        auto_mode_button.setVisible(true);
+    }
+
+    @FXML
+    void ExitSimulationButtonClick(MouseEvent event) {
+        start_simulation_button.setVisible(true);
+        build_map_button.setVisible(true);
+
+        exit_simulation_button.setVisible(false);
+        step_button.setVisible(false);
+        auto_mode_button.setVisible(false);
+    }
+
+    @FXML
+    void SetSimulationAutoMod(MouseEvent event) {
+        if(auto_mod)
+            auto_mod = false;
+        else
+            auto_mod = true;
+
+        while(auto_mod)
+        {
+            System.out.println("aa");
+        }
+    }
+
+    @FXML
+    void StepButtonClick(MouseEvent event) {
 
     }
 
@@ -234,10 +277,5 @@ public class Controller {
                     }
                 });
             });
-    }
-
-    void find_need_object(String name)
-    {
-
     }
 }
