@@ -250,6 +250,7 @@ public class Controller {
             }
         }
 
+
 /* Установить ночь
         ObservableList<Node> observableList = main_scene.getChildren();
 

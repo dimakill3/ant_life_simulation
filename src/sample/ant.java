@@ -14,6 +14,7 @@ public class ant {
     private boolean angry;
     private boolean hungry;
     private String action;
+    private Pair<Integer, Integer> purpose;
     private Pair<Integer, Integer> coords;
     private boolean dead = false;
 
@@ -110,5 +111,13 @@ public class ant {
 
     public boolean isHungry() {
         return hungry;
+    }
+
+    public void setPurpose(Pair<Integer, Integer> purpose) {
+        this.purpose = purpose;
+    }
+
+    public Pair<Integer, Integer> getPurpose() {
+        return purpose;
     }
 }
