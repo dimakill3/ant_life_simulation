@@ -7,7 +7,7 @@ public class objects {
     private int id;
     private Pair<Integer, Integer> coords;
 
-    public objects(int durability, int id, Pair<Integer, Integer> coords)
+    public objects(Pair<Integer, Integer> coords, int durability, int id)
     {
         this.durability = durability;
         this.id = id;
@@ -20,5 +20,9 @@ public class objects {
 
     public Pair<Integer, Integer> getCoords() {
         return coords;
+    }
+
+    public void IncDurability(int durability) {
+        this.durability += durability;
     }
 }

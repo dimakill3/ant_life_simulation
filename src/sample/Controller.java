@@ -2,6 +2,7 @@ package sample;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,14 +23,50 @@ import javafx.util.Pair;
 
 public class Controller {
 
+
     private String img_url = "/sample/images/grass.jpg";
-    private final Integer Scene_blocks = 20;
-    private boolean is_building_in_process = false;
     private Image filling_picture = new Image(img_url, 45, 45, true, false);
-    private int filling_block = 0;
-    private int[][] main_array = new int[Scene_blocks][Scene_blocks];
     private InnerShadow night = new InnerShadow();
+
+    private final Integer Scene_blocks = 20;
+
+    private boolean is_building_in_process = false;
+    private boolean is_simulation_in_process = false;
     private boolean auto_mod = false;
+
+    private int filling_block = blocks.grass.number;
+    private int[][] main_array = new int[Scene_blocks][Scene_blocks];
+
+    private Vector ants = new Vector();
+    private Vector anthills = new Vector();
+    private Vector eggs = new Vector();
+    private Vector culture = new Vector();
+    private Vector neutral_food = new Vector();
+    private Vector materials = new Vector();
+    private Vector water = new Vector();
+
+    private final int neutral = -1;
+    private final int first_ally = 0;
+    private final int second_ally = 1;
+
+    private final int min_material_durability = 30;
+    private final int max_material_durability = 40;
+
+    private final int min_water_durability = 80;
+    private final int max_water_durability = 100;
+
+    private final int min_food_durability = 6;
+    private final int max_food_durability = 12;
+
+    private final int min_food_usable = 30;
+    private final int max_food_usable = 40;
+
+    private final int how_step_to_born = 80;
+
+    private final int anthill_durability = 100;
+    private int anthill_count = 0;
+    private final int MaxAnthillCount = 2;
+
 
     @FXML
     private ResourceBundle resources;
@@ -57,6 +94,9 @@ public class Controller {
 
     @FXML
     private ImageView image_anthill;
+
+    @FXML
+    private ImageView image_mushrooms;
 
     @FXML
     private ImageView image_stick;
@@ -88,24 +128,11 @@ public class Controller {
         filling_block = blocks.apple.number;
     }
 
-/////////////////
     @FXML
     void ChooseWater(MouseEvent event) {
         filling_picture = blocks.water.picture;
         filling_block = blocks.water.number;
     }
-
-    @FXML
-    void WaterHintAppear(MouseEvent event) {
-
-        
-    }
-
-    @FXML
-    void WaterHintDisappear(MouseEvent event) {
-
-    }
-///////////////////////////
 
     @FXML
     void ChooseAnthill(MouseEvent event) {
@@ -132,6 +159,12 @@ public class Controller {
     }
 
     @FXML
+    void ChooseMushrooms(MouseEvent event) {
+        filling_picture = blocks.mushrooms.picture;
+        filling_block = blocks.mushrooms.number;
+    }
+
+    @FXML
     void ChooseInsectFlower(MouseEvent event) {
         filling_picture = blocks.infected_plant.picture;
         filling_block = blocks.infected_plant.number;
@@ -141,6 +174,13 @@ public class Controller {
     void CellClick(MouseEvent event) {
         if(is_building_in_process) {
             change_picture();
+        }
+        else
+        {
+            if(is_simulation_in_process)
+            {
+                //Обработка вывода информации
+            }
         }
     }
 
@@ -203,6 +243,31 @@ public class Controller {
         exit_simulation_button.setVisible(true);
         step_button.setVisible(true);
         auto_mode_button.setVisible(true);
+
+        is_simulation_in_process = true;
+
+        int anthill_number = 0;
+        for(int i = 0; i < Scene_blocks; i++)
+            for(int j = 0; j < Scene_blocks; j++)
+            {
+                if(main_array[i][j] == blocks.anthill.number)
+                {
+                    anthills.add(new anthill(new Pair<Integer, Integer>(i, j), anthill_durability, main_array[i][j], anthill_number));
+                }
+                if(main_array[i][j] == blocks.apple.number || main_array[i][j] == blocks.infected_plant.number || main_array[i][j] == blocks.mushrooms.number)
+                {
+                    neutral_food.add(new food(new Pair<Integer, Integer>(i, j), randomize(min_food_durability, max_food_durability),
+                            main_array[i][j], randomize(min_food_usable, max_food_usable)));
+                }
+                if(main_array[i][j] == blocks.water.number)
+                {
+                    water.add(new objects(new Pair<Integer, Integer>(i, j), randomize(min_water_durability, max_water_durability), main_array[i][j]));
+                }
+                if(main_array[i][j] == blocks.plant.number || main_array[i][j] == blocks.stick.number)
+                {
+                    materials.add(new objects(new Pair<Integer, Integer>(i, j), randomize(min_material_durability, max_material_durability), main_array[i][j]));
+                }
+            }
     }
 
     @FXML
@@ -270,6 +335,19 @@ public class Controller {
                         if(is_building_in_process) {
                             int matrixX = main_scene.getColumnIndex(element);
                             int matrixY = main_scene.getRowIndex(element);
+
+                            if(main_array[matrixX][matrixY] == blocks.anthill.number)
+                                anthill_count--;
+
+                            if(filling_block == blocks.anthill.number && (anthill_count + 1) <= MaxAnthillCount)
+                                anthill_count++;
+                            else
+                            {
+                                Alert error = new Alert(Alert.AlertType.ERROR, "Нельзя поставить более двух муравейников");
+                                error.showAndWait();
+                                return;
+                            }
+
                             main_scene.getChildren().remove(element);
 
                             main_array[matrixX][matrixY] = filling_block;
@@ -278,5 +356,10 @@ public class Controller {
                     }
                 });
             });
+    }
+
+    int randomize(int min, int max)
+    {
+        return min + (int) (Math.random() * max);
     }
 }

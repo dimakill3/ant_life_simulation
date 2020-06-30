@@ -11,8 +11,9 @@ public class anthill extends objects{
     private int count_food;
     private int count_water;
     private int count_materials;
+    private int ally;
 
-    public anthill(Pair<Integer, Integer> coords, int durability, int id)
+    public anthill(Pair<Integer, Integer> coords, int durability, int id, int ally)
     {
         super(durability, id, coords);
         this.anthill_level = 1;
@@ -23,6 +24,7 @@ public class anthill extends objects{
         this.count_food = 10;
         this.count_water = 10;
         this.count_materials = 10;
+        this.ally = ally;
     }
 
     public void IncCount_of_eggs() {

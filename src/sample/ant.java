@@ -18,10 +18,11 @@ public class ant {
     private Pair<Integer, Integer> coords;
     private boolean dead = false;
 
-    public ant (int health, int strength, int intellect, Pair<Integer, Integer> coords)
+    public ant (int health, int strength, int intellect, int agility, Pair<Integer, Integer> coords)
     {
         this.strength = strength;
         this.intellect = intellect;
+        this.agility = agility;
         this.coords = coords;
         this.hungry = false;
 

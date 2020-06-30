@@ -4,19 +4,21 @@ import javafx.util.Pair;
 
 public class food extends objects{
 
-    private final boolean culture;
+    private boolean culture;
     private int MaxUsable;
     private boolean farmer;
     private int usable;
+    private int ally;
 
 
-    public food(int durability, int id, Pair<Integer, Integer> coords, boolean culture, int usable)
+    public food(Pair<Integer, Integer> coords, int durability, int id, int usable)
     {
         super(durability, id, coords);
-        this.culture = culture;
+        this.culture = false;
         this.MaxUsable = usable;
         this.usable = usable;
         this.farmer = false;
+        this.ally = -1;
     }
 
     public void IncUsable(int usable) {
