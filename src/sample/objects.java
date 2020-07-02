@@ -4,12 +4,14 @@ import javafx.util.Pair;
 
 public class objects {
     private int durability;
+    private final int MaxDurability;
     private int id;
     private Pair<Integer, Integer> coords;
 
-    public objects(Pair<Integer, Integer> coords, int durability, int id)
+    public objects(Pair<Integer, Integer> coords, int max_durability, int id)
     {
-        this.durability = durability;
+        this.MaxDurability = max_durability;
+        this.durability = max_durability;
         this.id = id;
         this.coords = coords;
     }
@@ -23,6 +25,18 @@ public class objects {
     }
 
     public void IncDurability(int durability) {
-        this.durability += durability;
+        if(this.durability + durability >= MaxDurability)
+            this.durability = durability;
+        else
+            this.durability += durability;
+    }
+
+    public void DecDurability(int durability)
+    {
+        this.durability -= durability;
+    }
+
+    public int getDurability() {
+        return durability;
     }
 }

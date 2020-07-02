@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -27,6 +28,7 @@ public class Controller {
     private String img_url = "/sample/images/grass.jpg";
     private Image filling_picture = new Image(img_url, 45, 45, true, false);
     private InnerShadow night = new InnerShadow();
+    private InnerShadow rain = new InnerShadow();
 
     private final Integer Scene_blocks = 20;
 
@@ -37,17 +39,13 @@ public class Controller {
     private int filling_block = blocks.grass.number;
     private int[][] main_array = new int[Scene_blocks][Scene_blocks];
 
-    private Vector ants = new Vector();
-    private Vector anthills = new Vector();
-    private Vector eggs = new Vector();
-    private Vector culture = new Vector();
-    private Vector neutral_food = new Vector();
-    private Vector materials = new Vector();
-    private Vector water = new Vector();
-
-    private final int neutral = -1;
-    private final int first_ally = 0;
-    private final int second_ally = 1;
+    private Vector<Vector<ant>> ants = new Vector();
+    private Vector<anthill> anthills = new Vector();
+    private Vector<Vector<Integer>> eggs = new Vector();
+    private Vector<food> culture = new Vector();
+    private Vector<food> neutral_food = new Vector();
+    private Vector<objects> materials = new Vector();
+    private Vector<objects> water = new Vector();
 
     private final int min_material_durability = 30;
     private final int max_material_durability = 40;
@@ -63,10 +61,34 @@ public class Controller {
 
     private final int how_step_to_born = 80;
 
-    private final int anthill_durability = 100;
+    private final int anthill_durability = 20;
+
+    private final int min_characteristic = 2;
+    private final int max_characteristic = 10;
+    private final int min_ant_health = 25;
+    private final int max_ant_health = 50;
+
     private int anthill_count = 0;
     private final int MaxAnthillCount = 2;
 
+    private int day;
+    private int step;
+
+    private int[] anthill_levelUp_food = {30, 60};
+    private int[] anthill_levelUp_materials = {40, 80};
+    private int[] anthill_levelUp_water = {20, 40};
+
+    private int begin_count_of_ants;
+
+    private final int Dec_object_durability = 1;
+
+    private int chance_to_spawn_food;
+    private int chance_to_spawn_material;
+    private int chance_to_spawn_enemy;
+    private int chance_to_spawn_water;
+
+    private boolean is_night;
+    private boolean is_rain;
 
     @FXML
     private ResourceBundle resources;
@@ -246,13 +268,23 @@ public class Controller {
 
         is_simulation_in_process = true;
 
-        int anthill_number = 0;
+
         for(int i = 0; i < Scene_blocks; i++)
             for(int j = 0; j < Scene_blocks; j++)
             {
                 if(main_array[i][j] == blocks.anthill.number)
                 {
-                    anthills.add(new anthill(new Pair<Integer, Integer>(i, j), anthill_durability, main_array[i][j], anthill_number));
+                        anthills.add(new anthill(new Pair<Integer, Integer>(i, j), anthill_durability, main_array[i][j], anthill_count));
+                        ants.add(new Vector<ant>());
+                        eggs.add(new Vector<Integer>());
+
+                        for(int k = 0; k < begin_count_of_ants; k++) {
+                            ants.get(anthill_count).add(new ant(randomize(min_ant_health, max_ant_health), randomize(min_characteristic, max_characteristic),
+                                    randomize(min_characteristic, max_characteristic), randomize(min_characteristic, max_characteristic),
+                                    new Pair<Integer, Integer>(i, j)));
+                        }
+
+                        anthill_count++;
                 }
                 if(main_array[i][j] == blocks.apple.number || main_array[i][j] == blocks.infected_plant.number || main_array[i][j] == blocks.mushrooms.number)
                 {
@@ -268,6 +300,12 @@ public class Controller {
                     materials.add(new objects(new Pair<Integer, Integer>(i, j), randomize(min_material_durability, max_material_durability), main_array[i][j]));
                 }
             }
+
+            day = 1;
+            step = 1;
+            is_rain = false;
+            is_night = false;
+
     }
 
     @FXML
@@ -300,14 +338,15 @@ public class Controller {
 
     @FXML
     void initialize() {
-        night.setChoke(0.0);
-        night.setWidth(0);
-        night.setHeight(255);
+        night.setChoke(0);
         night.setRadius(100);
         night.setBlurType(BlurType.THREE_PASS_BOX);
         night.setColor(Color.BLACK);
-        night.setOffsetX(0.0);
-        night.setOffsetY(0.0);
+
+        rain.setColor(Color.BLUE);
+        rain.setChoke(0);
+        rain.setRadius(60);
+        rain.setBlurType(BlurType.THREE_PASS_BOX);
 
         for (int x = 0; x < Scene_blocks; x++) {
             for (int y = 0; y < Scene_blocks; y++) {
@@ -315,15 +354,19 @@ public class Controller {
             }
         }
 
-
-/* Установить ночь
+// Установить ночь
         ObservableList<Node> observableList = main_scene.getChildren();
 
+/*
         for(int i = 0; i < observableList.size(); i++)
         {
-            observableList.get(i).setEffect(night);
-        }
- */
+            observableList.get(i).effectProperty().setValue(night);
+        }*/
+
+
+
+        //Установить дождь
+       /* main_scene.setEffect(rain);*/
     }
 
     void change_picture()
@@ -339,13 +382,14 @@ public class Controller {
                             if(main_array[matrixX][matrixY] == blocks.anthill.number)
                                 anthill_count--;
 
-                            if(filling_block == blocks.anthill.number && (anthill_count + 1) <= MaxAnthillCount)
-                                anthill_count++;
-                            else
-                            {
-                                Alert error = new Alert(Alert.AlertType.ERROR, "Нельзя поставить более двух муравейников");
-                                error.showAndWait();
-                                return;
+                            if(filling_block == blocks.anthill.number) {
+                                if(anthill_count + 1 <= MaxAnthillCount)
+                                        anthill_count++;
+                                else{
+                                        Alert error = new Alert(Alert.AlertType.ERROR, "Нельзя поставить более двух муравейников");
+                                        error.showAndWait();
+                                        return;
+                                 }
                             }
 
                             main_scene.getChildren().remove(element);
@@ -361,5 +405,66 @@ public class Controller {
     int randomize(int min, int max)
     {
         return min + (int) (Math.random() * max);
+    }
+
+    void Step()
+    {
+        for(int i = 0; i < anthills.size(); i++)
+        {
+            //+1 Матка
+            int ant_count = anthills.get(i).getHow_ant() + 1;
+
+            //Если достаточно материалов, еды и воды, при этом другое улучшение закончено и муравейник не максимального уровня, то начинается улучшение
+            //При этом улучшение требует муравья, который будет заниматься строительством (сам процесс строительства описан при распределении работы между муравьями)
+            if((anthills.get(i).getBuild_step() == 0) && (anthills.get(i).getAnthill_level() != 3) &&
+                    (anthills.get(i).getCount_food() >= anthill_levelUp_food[anthills.get(i).getAnthill_level() - 1] + ant_count * 3) &&
+                    (anthills.get(i).getCount_water() >= anthill_levelUp_water[anthills.get(i).getAnthill_level() - 1] + ant_count * 3 +
+                            (anthill_durability - anthills.get(i).getDurability()) + Dec_object_durability * 4) &&
+                    (anthills.get(i).getCount_materials() >= anthill_levelUp_materials[anthills.get(i).getAnthill_level() - 1] +
+                            (anthill_durability - anthills.get(i).getDurability()) + Dec_object_durability * 4) )
+            {
+                anthills.get(i).setBuild_step();
+            }
+
+            //Если есть место для ещё одного муравья и еды хватит всем муравьям(учитывая матку и новорождённое яйцо) на 2 дня, то матка может родить яйцо
+            //Иначе, если еды не хватает, то матка создаёт яйцо, чтобы его съесть, при этом матка должна быть сытая. Так она может делать каждые пол дня (если сытая)
+            //Так как это считается канибаллизмом, то это делается только при вынужденных мерах
+            if(ant_count - 1 < anthills.get(i).getAnt_capacity() && anthills.get(i).getCount_food() >= ((ant_count + 1) * 2))
+            {
+                eggs.get(i).add(how_step_to_born);
+                anthills.get(i).IncCount_of_eggs();
+                anthills.get(i).setQueen_hungry(true);
+            }
+            else
+            {
+                if(anthills.get(i).getCount_food() < ant_count)
+                {
+                    anthills.get(i).IncCount_food(2);
+                    anthills.get(i).IncCount_water(2);
+                    anthills.get(i).setQueen_hungry(true);
+                }
+            }
+
+            for(int k = 0; k < blocks.grass.count_spawn_food; k++)
+            {
+                if(randomize(0, 100) == 0 || randomize(0, 100) == 1)
+                {
+
+                }
+            }
+
+            for(int k = 0; k < blocks.grass.count_spawn_material; k++)
+            {
+
+            }
+        }
+    }
+
+    public boolean isIts_night() {
+        return is_night;
+    }
+
+    public boolean isIts_rain() {
+        return is_rain;
     }
 }

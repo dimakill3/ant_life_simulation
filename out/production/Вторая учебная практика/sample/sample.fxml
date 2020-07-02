@@ -18,7 +18,7 @@
             <Image url="@images/apple_on_grass.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="image_water" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="582.0" onMouseClicked="#ChooseWater" onMouseEntered="#WaterHintAppear" onMouseExited="#WaterHintDisappear" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="137.0">
+      <ImageView fx:id="image_water" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="582.0" onMouseClicked="#ChooseWater" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="137.0">
          <image>
             <Image url="@images/water.jpg" />
          </image>
@@ -46,6 +46,11 @@
       <ImageView fx:id="image_anthill" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="580.0" onMouseClicked="#ChooseAnthill" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="275.0" AnchorPane.rightAnchor="91.0">
          <image>
             <Image url="@images/anthill.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="image_mushrooms" fitHeight="45.0" fitWidth="45.0" layoutX="1010.0" layoutY="630.0" onMouseClicked="#ChooseMushrooms" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="225.0" AnchorPane.rightAnchor="45.0">
+         <image>
+            <Image url="@images/mushrooms.png" />
          </image>
       </ImageView>
       <Button fx:id="apply_map_button" layoutX="864.0" layoutY="670.0" mnemonicParsing="false" onAction="#Apply_Changes_Button_Click" text="Применить" visible="false" AnchorPane.bottomAnchor="105.0" AnchorPane.rightAnchor="65.0" />

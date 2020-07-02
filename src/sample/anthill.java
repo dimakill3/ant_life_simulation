@@ -3,6 +3,7 @@ package sample;
 import javafx.util.Pair;
 
 public class anthill extends objects{
+    private boolean queen_hungry;
     private int ant_capacity;
     private int how_ant;
     private int count_of_eggs;
@@ -12,10 +13,12 @@ public class anthill extends objects{
     private int count_water;
     private int count_materials;
     private int ally;
+    private int build_step;
+    private final int lvlUp_steps = 20;
 
     public anthill(Pair<Integer, Integer> coords, int durability, int id, int ally)
     {
-        super(durability, id, coords);
+        super(coords, durability, id);
         this.anthill_level = 1;
         this.ant_capacity = 7;
         this.how_ant = 0;
@@ -25,6 +28,8 @@ public class anthill extends objects{
         this.count_water = 10;
         this.count_materials = 10;
         this.ally = ally;
+        this.build_step = 0;
+        this.queen_hungry = false;
     }
 
     public void IncCount_of_eggs() {
@@ -100,10 +105,50 @@ public class anthill extends objects{
         return count_materials;
     }
 
+    public void DecBuild_step() {
+        this.build_step--;
+    }
+
+    public void setBuild_step() {
+        this.build_step = lvlUp_steps;
+    }
+
+    public int getBuild_step() {
+        return build_step;
+    }
+
+    public int getAnthill_level() {
+        return anthill_level;
+    }
+
     public void LevelUp()
     {
         this.anthill_level++;
         ant_capacity += 4;
+    }
+
+    public int getAnt_capacity() {
+        return ant_capacity;
+    }
+
+    public boolean isQueen_hungry() {
+        return queen_hungry;
+    }
+
+    public void setQueen_hungry(boolean queen_hungry) {
+        this.queen_hungry = queen_hungry;
+    }
+
+    public int getHow_ant() {
+        return how_ant;
+    }
+
+    public void IncHow_ant() {
+        this.how_ant++;
+    }
+
+    public void DecHow_ant() {
+        this.how_ant--;
     }
 }
 

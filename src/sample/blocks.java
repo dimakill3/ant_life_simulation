@@ -13,6 +13,8 @@ grass(0, "/sample/images/grass.jpg"), anthill(1, "/sample/images/anthill.png"), 
 
     public final int number;
     public final Image picture;
+    public final int count_spawn_food = 3;
+    public final int count_spawn_material = 2;
 
 
     blocks(int number, String url){

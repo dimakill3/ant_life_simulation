@@ -24,6 +24,7 @@ public class ant {
         this.intellect = intellect;
         this.agility = agility;
         this.coords = coords;
+        this.purpose = new Pair<Integer, Integer>(-1, -1);
         this.hungry = false;
 
         if(intellect > strength)

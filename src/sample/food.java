@@ -13,7 +13,7 @@ public class food extends objects{
 
     public food(Pair<Integer, Integer> coords, int durability, int id, int usable)
     {
-        super(durability, id, coords);
+        super(coords, durability, id);
         this.culture = false;
         this.MaxUsable = usable;
         this.usable = usable;
