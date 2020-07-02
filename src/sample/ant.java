@@ -10,8 +10,8 @@ public class ant {
     private int strength;
     private int intellect;
     private int agility;
-    private boolean worker;
-    private boolean angry;
+    private final boolean worker;
+    private final boolean angry;
     private boolean hungry;
     private String action;
     private Pair<Integer, Integer> purpose;
@@ -26,6 +26,7 @@ public class ant {
         this.coords = coords;
         this.purpose = new Pair<Integer, Integer>(-1, -1);
         this.hungry = false;
+        this.action = Actions.InAnthill.toString();
 
         if(intellect > strength)
         {
@@ -121,5 +122,13 @@ public class ant {
 
     public Pair<Integer, Integer> getPurpose() {
         return purpose;
+    }
+
+    public boolean isWorker() {
+        return worker;
+    }
+
+    public boolean isAngry() {
+        return angry;
     }
 }

@@ -31,9 +31,16 @@ public class objects {
             this.durability += durability;
     }
 
-    public void DecDurability(int durability)
+    public boolean DecDurability(int durability)
     {
-        this.durability -= durability;
+        if(this.durability - durability <= 0) {
+            this.durability = 0;
+            return true;
+        }
+        else {
+            this.durability -= durability;
+            return false;
+        }
     }
 
     public int getDurability() {
