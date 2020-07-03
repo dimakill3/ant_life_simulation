@@ -3,7 +3,7 @@ package sample;
 import javafx.scene.image.Image;
 
 public enum blocks {
-grass(0, "/sample/images/grass.jpg"), anthill(1, "/sample/images/anthill.png"), water(2, "/sample/images/water.jpg"),
+    grass(0, "/sample/images/grass.jpg"), anthill(1, "/sample/images/anthill.png"), water(2, "/sample/images/water.jpg"),
     apple(3, "/sample/images/apple_on_grass.png"), plant(4, "/sample/images/plant.png"),
     infected_plant(5, "/sample/images/infected_plant.png"), stick(6, "/sample/images/stick.png"),
     mushrooms(7, "/sample/images/mushrooms.png"),

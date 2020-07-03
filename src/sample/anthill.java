@@ -9,6 +9,10 @@ public class anthill extends objects{
     private int count_of_eggs;
     private int anthill_level;
     private boolean guard;
+    private int Max_milk_farms;
+    private int Max_mushrooms_farms;
+    private int milk_farms;
+    private int mushrooms_farms;
     private int count_food;
     private int count_water;
     private int count_materials;
@@ -30,6 +34,8 @@ public class anthill extends objects{
         this.ally = ally;
         this.build_step = 0;
         this.queen_hungry = false;
+        this.Max_milk_farms = 1;
+        this.Max_mushrooms_farms = 1;
     }
 
     public void IncCount_of_eggs() {
@@ -125,6 +131,10 @@ public class anthill extends objects{
     {
         this.anthill_level++;
         ant_capacity += 4;
+        if(this.anthill_level == 3) {
+            Max_milk_farms++;
+            Max_mushrooms_farms++;
+        }
     }
 
     public int getAnt_capacity() {
@@ -149,6 +159,38 @@ public class anthill extends objects{
 
     public void DecHow_ant() {
         this.how_ant--;
+    }
+
+    public int getMilk_farm() {
+        return milk_farms;
+    }
+
+    public int getMushrooms_farm() {
+        return mushrooms_farms;
+    }
+
+    public int getMax_milk_farms() {
+        return Max_milk_farms;
+    }
+
+    public int getMax_mushrooms_farms() {
+        return Max_mushrooms_farms;
+    }
+
+    public void IncMax_milk_farms() {
+        Max_milk_farms++;
+    }
+
+    public void IncMax_mushrooms_farms() {
+        Max_mushrooms_farms++;
+    }
+
+    public void IncMilk_farms() {
+        this.milk_farms++;
+    }
+
+    public void IncMushrooms_farms() {
+        this.mushrooms_farms++;
     }
 }
 
