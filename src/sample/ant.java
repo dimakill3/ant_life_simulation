@@ -13,23 +13,26 @@ public class ant {
     private int strength;
     private int intellect;
     private int agility;
+    private int grab;
     private final boolean worker;
     private final boolean angry;
     private boolean hungry;
+    private boolean dehydration;
     private String action;
-    private Pair<Integer, Integer> purpose;
-    private Pair<Integer, Integer> coords;
+    private Point purpose;
+    private Point coords;
     private boolean dead = false;
     public Vector<Point> way;
     private int[][] matrixWay;
 
-    public ant (int health, int strength, int intellect, int agility, Pair<Integer, Integer> coords)
+    public ant (int health, int strength, int intellect, int agility, Point coords)
     {
         this.strength = strength;
         this.intellect = intellect;
         this.agility = agility;
         this.coords = coords;
-        this.purpose = new Pair<>(-1, -1);
+        this.grab = 0;
+        this.purpose = new Point(-1, -1);
         this.hungry = false;
         this.action = Actions.InAnthill.toString();
 
@@ -108,11 +111,11 @@ public class ant {
         return action;
     }
 
-    public void setCoords(Pair<Integer, Integer> coords) {
+    public void setCoords(Point coords) {
         this.coords = coords;
     }
 
-    public Pair<Integer, Integer> getCoords() {
+    public Point getCoords() {
         return coords;
     }
 
@@ -124,9 +127,17 @@ public class ant {
         return hungry;
     }
 
-    public void setPurpose(Pair<Integer, Integer> purpose) { this.purpose = purpose; }
+    public void setDehydration(boolean dehydration) {
+        this.dehydration = dehydration;
+    }
 
-    public Pair<Integer, Integer> getPurpose() {
+    public boolean isDehydration() {
+        return dehydration;
+    }
+
+    public void setPurpose(Point purpose) { this.purpose = purpose; }
+
+    public Point getPurpose() {
         return purpose;
     }
 
@@ -138,6 +149,14 @@ public class ant {
         return angry;
     }
 
+    public void setGrab(int grab) {
+        this.grab = grab;
+    }
+
+    public int getGrab() {
+        return grab;
+    }
+
     public void setMatrixWay(int[][] matrixWay) {
         this.matrixWay = matrixWay;
     }
@@ -146,7 +165,7 @@ public class ant {
         int markNumber = 0;
         boolean finished = false;
 
-        matrixWay[this.coords.getKey()][this.coords.getValue()] = 0;
+        matrixWay[this.coords.x][this.coords.y] = 0;
 
         do {
             for (int i = 0; i < Controller.Scene_blocks; i++) {
@@ -206,7 +225,7 @@ public class ant {
         int markNumber = 0;
         boolean finished = false;
 
-        matrixWay[this.coords.getKey()][this.coords.getValue()] = 0;
+        matrixWay[this.coords.x][this.coords.y] = 0;
 
         do {
             for (int i = 0; i < Controller.Scene_blocks; i++) {
@@ -233,10 +252,10 @@ public class ant {
                         if (i != Controller.Scene_blocks - 1 && j != 0 && matrixWay[i + 1][j] != 99 && matrixWay[i][j - 1] != 99) //слева снизу
                             if (matrixWay[i + 1][j - 1] == -1) matrixWay[i + 1][j - 1] = markNumber + 1;
 
-                       if (matrixWay[this.purpose.getKey()][this.purpose.getValue()] >= 0 && matrixWay[this.purpose.getKey()][this.purpose.getValue()] < 99){
+                       if (matrixWay[this.purpose.x][this.purpose.y] >= 0 && matrixWay[this.purpose.x][this.purpose.y] < 99){
                             finished = true;
                             this.way.clear();
-                            Add_Way(this.purpose.getKey(), this.purpose.getValue(), markNumber);
+                            Add_Way(this.purpose.x, this.purpose.y, markNumber);
                         }
 
 

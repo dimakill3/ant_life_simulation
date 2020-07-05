@@ -2,6 +2,8 @@ package sample;
 
 import javafx.util.Pair;
 
+import java.awt.*;
+
 public class food extends objects{
 
     private boolean culture;
@@ -11,7 +13,7 @@ public class food extends objects{
     private int ally;
 
 
-    public food(Pair<Integer, Integer> coords, int durability, int id, int usable)
+    public food(Point coords, int durability, int id, int usable)
     {
         super(coords, durability, id);
         this.culture = false;

@@ -2,13 +2,15 @@ package sample;
 
 import javafx.util.Pair;
 
+import java.awt.*;
+
 public class objects {
     private int durability;
     private final int MaxDurability;
     private int id;
-    private Pair<Integer, Integer> coords;
+    private Point coords;
 
-    public objects(Pair<Integer, Integer> coords, int max_durability, int id)
+    public objects(Point coords, int max_durability, int id)
     {
         this.MaxDurability = max_durability;
         this.durability = max_durability;
@@ -16,11 +18,11 @@ public class objects {
         this.coords = coords;
     }
 
-    public void setCoords(Pair<Integer, Integer> coords) {
+    public void setCoords(Point coords) {
         this.coords = coords;
     }
 
-    public Pair<Integer, Integer> getCoords() {
+    public Point getCoords() {
         return coords;
     }
 

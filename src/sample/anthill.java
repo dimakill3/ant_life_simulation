@@ -2,6 +2,8 @@ package sample;
 
 import javafx.util.Pair;
 
+import java.awt.*;
+
 public class anthill extends objects{
     private boolean queen_hungry;
     private int ant_capacity;
@@ -20,7 +22,7 @@ public class anthill extends objects{
     private int build_step;
     private final int lvlUp_steps = 20;
 
-    public anthill(Pair<Integer, Integer> coords, int durability, int id, int ally)
+    public anthill(Point coords, int durability, int id, int ally)
     {
         super(coords, durability, id);
         this.anthill_level = 1;
@@ -94,7 +96,7 @@ public class anthill extends objects{
         return count_water;
     }
 
-    public void setCount_materials(int count_materials) {
+    public void IncCount_materials(int count_materials) {
             this.count_materials += count_materials;
     }
 
