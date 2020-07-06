@@ -3,6 +3,7 @@ package sample;
 import javafx.util.Pair;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.Vector;
 
 public class ant {
@@ -24,6 +25,7 @@ public class ant {
     private boolean dead = false;
     public Vector<Point> way;
     private int[][] matrixWay;
+    private Point sprite_cut;
 
     public ant (int health, int strength, int intellect, int agility, Point coords)
     {
@@ -34,7 +36,8 @@ public class ant {
         this.grab = 0;
         this.purpose = new Point(-1, -1);
         this.hungry = false;
-        this.action = Actions.InAnthill.toString();
+        this.action = Actions.Wait.toString();
+        this.sprite_cut = new Point(0, 0);
 
         this.way = new Vector<>();
         this.matrixWay = new int[Controller.Scene_blocks][Controller.Scene_blocks];
@@ -157,8 +160,18 @@ public class ant {
         return grab;
     }
 
+    public void setSprite_cut(Point sprite_cut) {
+        this.sprite_cut = sprite_cut;
+    }
+
+    public Point getSprite_cut() {
+        return sprite_cut;
+    }
+
     public void setMatrixWay(int[][] matrixWay) {
-        this.matrixWay = matrixWay;
+        this.matrixWay = matrixWay.clone();
+        for(int i = 0; i < this.matrixWay.length; i++)
+            this.matrixWay[i] = matrixWay[i].clone();
     }
 
     public void WavePropagation(int item_id) {  // распространение волны
@@ -167,6 +180,11 @@ public class ant {
 
         matrixWay[this.coords.x][this.coords.y] = 0;
 
+        for(int i = 0; i < Controller.Scene_blocks; i++)
+            for(int j = 0; j < Controller.Scene_blocks; j++)
+                if(matrixWay[i][j] > 999 && matrixWay[i][j] <= 1003 && matrixWay[i][j] != item_id)
+                    matrixWay[i][j] = 999;
+
         do {
             for (int i = 0; i < Controller.Scene_blocks; i++) {
                 for (int j = 0; j < Controller.Scene_blocks; j++) {
@@ -180,53 +198,55 @@ public class ant {
                         if (j != 0)
                             if (matrixWay[i][j - 1] == -1) matrixWay[i][j - 1] = markNumber + 1;
                         //по углам
-                        if ((i != Controller.Scene_blocks - 1) && (j != Controller.Scene_blocks - 1) && matrixWay[i + 1][j] != 99 && matrixWay[i][j + 1] != 99) //справа снизу
+                        if ((i != Controller.Scene_blocks - 1) && (j != Controller.Scene_blocks - 1) && matrixWay[i + 1][j] != 999  && matrixWay[i][j + 1] != 999) //справа снизу
                             if (matrixWay[i + 1][j + 1] == -1) matrixWay[i + 1][j + 1] = markNumber + 1;
 
-                        if (j != Controller.Scene_blocks - 1 && i != 0  && matrixWay[i - 1][j] != 99 && matrixWay[i][j + 1] != 99) //справа сверху
+                        if (j != Controller.Scene_blocks - 1 && i != 0  && matrixWay[i - 1][j] != 999 && matrixWay[i][j + 1] != 999) //справа сверху
                             if (matrixWay[i - 1][j + 1] == -1) matrixWay[i - 1][j + 1] = markNumber + 1;
 
-                        if (i != 0 && j != 0 && matrixWay[i - 1][j] != 99 && matrixWay[i][j - 1] != 99) //слева сверху
+                        if (i != 0 && j != 0 && matrixWay[i - 1][j] != 999 && matrixWay[i][j - 1] != 999) //слева сверху
                             if (matrixWay[i - 1][j - 1] == -1) matrixWay[i - 1][j - 1] = markNumber + 1;
 
-                        if (i != Controller.Scene_blocks - 1 && j != 0 && matrixWay[i + 1][j] != 99 && matrixWay[i][j - 1] != 99) //слева снизу
+                        if (i != Controller.Scene_blocks - 1 && j != 0 &&
+                                matrixWay[i + 1][j] != 999 && matrixWay[i][j - 1] != 999) //слева снизу
                             if (matrixWay[i + 1][j - 1] == -1) matrixWay[i + 1][j - 1] = markNumber + 1;
-
-                       /* if (matrixWay[this.purpose.getKey()][this.purpose.getValue()] >= 0 && matrixWay[this.purpose.getKey()][this.purpose.getValue()] < 99){
-                            finished = true;
-                            this.way.clear();
-                            Add_Way(this.purpose.getKey(), this.purpose.getValue(), markNumber);
-                        }*/
-
-
                     }
+
                     if(matrixWay[i][j] == item_id &&
-                            (matrixWay[i + 1][j] >= 0 && matrixWay[i + 1][j] < 90 ||
-                                    matrixWay[i][j + 1] >= 0 && matrixWay[i][j + 1] < 90 ||
-                                    matrixWay[i - 1][j] >= 0 && matrixWay[i - 1][j] < 90 ||
-                                    matrixWay[i][j - 1] >= 0 && matrixWay[i][j - 1] < 90 ||
-                                    matrixWay[i + 1][j + 1] >= 0 && matrixWay[i + 1][j + 1] < 90 ||
-                                    matrixWay[i - 1][j + 1] >= 0 && matrixWay[i - 1][j + 1] < 90 ||
-                                    matrixWay[i + 1][j - 1] >= 0 && matrixWay[i + 1][j - 1] < 90 ||
-                                    matrixWay[i - 1][j - 1] >= 0 && matrixWay[i - 1][j - 1] < 90))
+                            ((i != Controller.Scene_blocks - 1 && matrixWay[i + 1][j] >= 0 && matrixWay[i + 1][j] < 90) ||
+                            (j != Controller.Scene_blocks - 1 && matrixWay[i][j + 1] >= 0 && matrixWay[i][j + 1] < 90) ||
+                            (i != 0 && matrixWay[i - 1][j] >= 0 && matrixWay[i - 1][j] < 90) ||
+                            (j != 0 && matrixWay[i][j - 1] >= 0 && matrixWay[i][j - 1] < 90) ||
+                            (i != Controller.Scene_blocks - 1 && j != Controller.Scene_blocks - 1 && matrixWay[i + 1][j + 1] >= 0 && matrixWay[i + 1][j + 1] < 90) ||
+                            (i != 0 && j != Controller.Scene_blocks - 1 && matrixWay[i - 1][j + 1] >= 0 && matrixWay[i - 1][j + 1] < 90) ||
+                            (i != Controller.Scene_blocks - 1 && j != 0 && matrixWay[i + 1][j - 1] >= 0 && matrixWay[i + 1][j - 1] < 90) ||
+                            (i != 0 && j != 0 && matrixWay[i - 1][j - 1] >= 0 && matrixWay[i - 1][j - 1] < 90)))
                     {
+                        this.matrixWay[i][j] = markNumber + 2;
                         finished = true;
                         way.clear();
-                        Add_Way(i, j, markNumber);
+                        Add_Way(i, j, markNumber + 2);
+                        break;
                     }
                 }
             }
             markNumber++;
         }while (!finished && markNumber < Controller.Scene_blocks* Controller.Scene_blocks);
-        print_wave();
     }
 
-    public void WavePropagation() {  // распространение волны
+    public void WavePropagation(Point place) {  // распространение волны
         int markNumber = 0;
         boolean finished = false;
 
         matrixWay[this.coords.x][this.coords.y] = 0;
 
+        for(int i = 0; i < Controller.Scene_blocks; i++)
+            for(int j = 0; j < Controller.Scene_blocks; j++)
+                if(place.x != i && place.y != j && matrixWay[i][j] > 999 && matrixWay[i][j] <= 1003)
+                    matrixWay[i][j] = 999;
+
+        matrixWay[purpose.x][purpose.y] = -1;
+
         do {
             for (int i = 0; i < Controller.Scene_blocks; i++) {
                 for (int j = 0; j < Controller.Scene_blocks; j++) {
@@ -240,36 +260,33 @@ public class ant {
                         if (j != 0)
                             if (matrixWay[i][j - 1] == -1) matrixWay[i][j - 1] = markNumber + 1;
                         //по углам
-                        if ((i != Controller.Scene_blocks - 1) && (j != Controller.Scene_blocks - 1) && matrixWay[i + 1][j] != 99 && matrixWay[i][j + 1] != 99) //справа снизу
+                        if ((i != Controller.Scene_blocks - 1) && (j != Controller.Scene_blocks - 1) && matrixWay[i + 1][j] != 999 && matrixWay[i][j + 1] != 999) //справа снизу
                             if (matrixWay[i + 1][j + 1] == -1) matrixWay[i + 1][j + 1] = markNumber + 1;
 
-                        if (j != Controller.Scene_blocks - 1 && i != 0  && matrixWay[i - 1][j] != 99 && matrixWay[i][j + 1] != 99) //справа сверху
+                        if (j != Controller.Scene_blocks - 1 && i != 0  && matrixWay[i - 1][j] != 999 && matrixWay[i][j + 1] != 999) //справа сверху
                             if (matrixWay[i - 1][j + 1] == -1) matrixWay[i - 1][j + 1] = markNumber + 1;
 
-                        if (i != 0 && j != 0 && matrixWay[i - 1][j] != 99 && matrixWay[i][j - 1] != 99) //слева сверху
+                        if (i != 0 && j != 0 && matrixWay[i - 1][j] != 999 && matrixWay[i][j - 1] != 999) //слева сверху
                             if (matrixWay[i - 1][j - 1] == -1) matrixWay[i - 1][j - 1] = markNumber + 1;
 
-                        if (i != Controller.Scene_blocks - 1 && j != 0 && matrixWay[i + 1][j] != 99 && matrixWay[i][j - 1] != 99) //слева снизу
+                        if (i != Controller.Scene_blocks - 1 && j != 0 && matrixWay[i + 1][j] != 999 && matrixWay[i][j - 1] != 999) //слева снизу
                             if (matrixWay[i + 1][j - 1] == -1) matrixWay[i + 1][j - 1] = markNumber + 1;
 
-                       if (matrixWay[this.purpose.x][this.purpose.y] >= 0 && matrixWay[this.purpose.x][this.purpose.y] < 99){
+                       if (matrixWay[this.purpose.x][this.purpose.y] >= 0 && matrixWay[this.purpose.x][this.purpose.y] < 999){
                             finished = true;
                             this.way.clear();
-                            Add_Way(this.purpose.x, this.purpose.y, markNumber);
+                            Add_Way(this.purpose.x, this.purpose.y, markNumber + 1);
                         }
-
-
                     }
                 }
             }
             markNumber++;
         }while (!finished && markNumber < Controller.Scene_blocks* Controller.Scene_blocks);
-        print_wave();
     }
 
     void Add_Way(int _target_X, int _target_Y, int _markNumber){
 
-        if(matrixWay[_target_X][_target_Y] != 0 && way.size() < _markNumber + 1) {
+        if(matrixWay[_target_X][_target_Y] != 0 && way.size() < _markNumber) {
             way.add(0, new Point(_target_X, _target_Y));
 
             if (_target_Y < Controller.Scene_blocks - 1) //Справа
@@ -289,19 +306,19 @@ public class ant {
                     Add_Way(_target_X - 1, _target_Y, _markNumber);
                 }
             //по углам
-            if (_target_Y < Controller.Scene_blocks - 1 && _target_X < Controller.Scene_blocks - 1 && matrixWay[_target_X + 1][_target_Y] != 99 && matrixWay[_target_X][_target_Y + 1] != 99) //Справа снизу
+            if (_target_Y < Controller.Scene_blocks - 1 && _target_X < Controller.Scene_blocks - 1 && matrixWay[_target_X + 1][_target_Y] != 999 && matrixWay[_target_X][_target_Y + 1] != 999) //Справа снизу
                 if (matrixWay[_target_X + 1][_target_Y + 1] == matrixWay[_target_X][_target_Y] - 1) {
                     Add_Way(_target_X + 1, _target_Y + 1, _markNumber);
                 }
-            if (_target_Y > 0 && _target_X < Controller.Scene_blocks - 1  && matrixWay[_target_X + 1][_target_Y] != 99 && matrixWay[_target_X][_target_Y - 1] != 99)//Слева снизу
+            if (_target_Y > 0 && _target_X < Controller.Scene_blocks - 1  && matrixWay[_target_X + 1][_target_Y] != 999 && matrixWay[_target_X][_target_Y - 1] != 999)//Слева снизу
                 if (matrixWay[_target_X + 1][_target_Y - 1] == matrixWay[_target_X][_target_Y] - 1) {
                     Add_Way(_target_X + 1, _target_Y - 1, _markNumber);
                 }
-            if (_target_Y < Controller.Scene_blocks - 1 && _target_X > 0  && matrixWay[_target_X - 1][_target_Y] != 99 && matrixWay[_target_X][_target_Y + 1] != 99)//Сверху справа
+            if (_target_Y < Controller.Scene_blocks - 1 && _target_X > 0  && matrixWay[_target_X - 1][_target_Y] != 999 && matrixWay[_target_X][_target_Y + 1] != 999)//Сверху справа
                 if (matrixWay[_target_X - 1][_target_Y + 1] == matrixWay[_target_X][_target_Y] - 1) {
                     Add_Way(_target_X - 1, _target_Y + 1, _markNumber);
                 }
-            if (_target_X > 0 && _target_Y > 0  && matrixWay[_target_X - 1][_target_Y] != 99 && matrixWay[_target_X][_target_Y - 1] != 99) //Сверху слева
+            if (_target_X > 0 && _target_Y > 0  && matrixWay[_target_X - 1][_target_Y] != 999 && matrixWay[_target_X][_target_Y - 1] != 999) //Сверху слева
                 if (matrixWay[_target_X - 1][_target_Y - 1] == matrixWay[_target_X][_target_Y] - 1 ) {
                     Add_Way(_target_X - 1, _target_Y - 1, _markNumber);
                 }
@@ -315,5 +332,10 @@ public class ant {
             }
             System.out.println();
         }
+    }
+
+    void matrix_search(int x, int y)
+    {
+
     }
 }
