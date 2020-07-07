@@ -1,5 +1,6 @@
 package sample;
 
+import com.sun.deploy.security.SelectableSecurityManager;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -213,20 +214,38 @@ public class ant {
                     }
 
                     if(matrixWay[i][j] == item_id &&
-                            ((i != Controller.Scene_blocks - 1 && matrixWay[i + 1][j] >= 0 && matrixWay[i + 1][j] < 90) ||
-                            (j != Controller.Scene_blocks - 1 && matrixWay[i][j + 1] >= 0 && matrixWay[i][j + 1] < 90) ||
-                            (i != 0 && matrixWay[i - 1][j] >= 0 && matrixWay[i - 1][j] < 90) ||
-                            (j != 0 && matrixWay[i][j - 1] >= 0 && matrixWay[i][j - 1] < 90) ||
-                            (i != Controller.Scene_blocks - 1 && j != Controller.Scene_blocks - 1 && matrixWay[i + 1][j + 1] >= 0 && matrixWay[i + 1][j + 1] < 90) ||
-                            (i != 0 && j != Controller.Scene_blocks - 1 && matrixWay[i - 1][j + 1] >= 0 && matrixWay[i - 1][j + 1] < 90) ||
-                            (i != Controller.Scene_blocks - 1 && j != 0 && matrixWay[i + 1][j - 1] >= 0 && matrixWay[i + 1][j - 1] < 90) ||
-                            (i != 0 && j != 0 && matrixWay[i - 1][j - 1] >= 0 && matrixWay[i - 1][j - 1] < 90)))
+                            ((i != Controller.Scene_blocks - 1 && matrixWay[i + 1][j] >= 0 && matrixWay[i + 1][j] < 999) ||
+                            (j != Controller.Scene_blocks - 1 && matrixWay[i][j + 1] >= 0 && matrixWay[i][j + 1] < 999) ||
+                            (i != 0 && matrixWay[i - 1][j] >= 0 && matrixWay[i - 1][j] < 999) ||
+                            (j != 0 && matrixWay[i][j - 1] >= 0 && matrixWay[i][j - 1] < 999) ||
+                            (i != Controller.Scene_blocks - 1 && j != Controller.Scene_blocks - 1 && matrixWay[i + 1][j + 1] >= 0 && matrixWay[i + 1][j + 1] < 999) ||
+                            (i != 0 && j != Controller.Scene_blocks - 1 && matrixWay[i - 1][j + 1] >= 0 && matrixWay[i - 1][j + 1] < 999) ||
+                            (i != Controller.Scene_blocks - 1 && j != 0 && matrixWay[i + 1][j - 1] >= 0 && matrixWay[i + 1][j - 1] < 999) ||
+                            (i != 0 && j != 0 && matrixWay[i - 1][j - 1] >= 0 && matrixWay[i - 1][j - 1] < 999)))
                     {
-                        this.matrixWay[i][j] = markNumber + 2;
-                        finished = true;
-                        way.clear();
-                        Add_Way(i, j, markNumber + 2);
-                        break;
+                        if(((i != Controller.Scene_blocks - 1 && matrixWay[i + 1][j] == 0) ||
+                                (j != Controller.Scene_blocks - 1 && matrixWay[i][j + 1] == 0) ||
+                                (i != 0 && matrixWay[i - 1][j] == 0) ||
+                                (j != 0 && matrixWay[i][j - 1] == 0) ||
+                                (i != Controller.Scene_blocks - 1 && j != Controller.Scene_blocks - 1 && matrixWay[i + 1][j + 1] == 0) ||
+                                (i != 0 && j != Controller.Scene_blocks - 1 && matrixWay[i - 1][j + 1] == 0) ||
+                                (i != Controller.Scene_blocks - 1 && j != 0 && matrixWay[i + 1][j - 1] == 0) ||
+                                (i != 0 && j != 0 && matrixWay[i - 1][j - 1] == 0)))
+                        {
+                            this.matrixWay[i][j] = markNumber + 1;
+                            finished = true;
+                            way.clear();
+                            Add_Way(i, j, markNumber + 1);
+                            break;
+                        }
+                        else
+                        {
+                            this.matrixWay[i][j] = markNumber + 2;
+                            finished = true;
+                            way.clear();
+                            Add_Way(i, j, markNumber + 2);
+                            break;
+                        }
                     }
                 }
             }

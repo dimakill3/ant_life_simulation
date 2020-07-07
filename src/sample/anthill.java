@@ -6,6 +6,7 @@ import java.awt.*;
 
 public class anthill extends objects{
     private boolean queen_hungry;
+    private boolean queen_dehydration;
     private int ant_capacity;
     private int how_ant;
     private int count_of_eggs;
@@ -36,6 +37,7 @@ public class anthill extends objects{
         this.ally = ally;
         this.build_step = 0;
         this.queen_hungry = false;
+        this.queen_dehydration = false;
         this.Max_milk_farms = 1;
         this.Max_mushrooms_farms = 1;
     }
@@ -149,6 +151,14 @@ public class anthill extends objects{
 
     public void setQueen_hungry(boolean queen_hungry) {
         this.queen_hungry = queen_hungry;
+    }
+
+    public boolean isQueen_dehydration() {
+        return queen_dehydration;
+    }
+
+    public void setQueen_dehydration(boolean queen_dehydration) {
+        this.queen_dehydration = queen_dehydration;
     }
 
     public int getHow_ant() {

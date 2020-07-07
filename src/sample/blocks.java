@@ -8,7 +8,8 @@ public enum blocks {
     infected_plant(5, "/sample/images/infected_plant.png"), stick(6, "/sample/images/stick.png"),
     mushrooms(7, "/sample/images/mushrooms.png"), ant_worker(8, "/sample/images/ant_worker_sprite.png"),
     ant_worker_with_food(9, "/sample/images/ant_worker_with_food_sprite.png"), ant_worker_with_water(10, "/sample/images/ant_worker_with_water_sprite.png"),
-    ant_worker_with_material(11, "/sample/images/ant_worker_with_material_sprite.png"), ant_fighter(12, "/sample/images/ant_fighter.png");
+    ant_worker_with_material(11, "/sample/images/ant_worker_with_material_sprite.png"), ant_fighter(12, "/sample/images/ant_fighter.png"),
+    anthill_lvl2(13, "/sample/images/anthill_lv2.png"), anthill_lvl3(14, "/sample/images/anthill_lv3.png");
 
 
     public final int number;
