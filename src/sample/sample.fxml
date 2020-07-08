@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -8,7 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="main_window" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane fx:id="main_window" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1650.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <Button fx:id="start_simulation_button" layoutX="840.0" layoutY="50.0" mnemonicParsing="false" onAction="#Start_Simulation_Button_Click" text="Запуск симуляции" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="50.0" />
       <Button fx:id="build_map_button" layoutX="835.0" layoutY="725.0" mnemonicParsing="false" onAction="#Begin_Changes_Button_Click" text="Редактировать поле" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="40.0" />
@@ -53,7 +55,7 @@
          </image>
       </ImageView>
       <Button fx:id="apply_map_button" layoutX="864.0" layoutY="670.0" mnemonicParsing="false" onAction="#Apply_Changes_Button_Click" text="Применить" visible="false" AnchorPane.bottomAnchor="105.0" AnchorPane.rightAnchor="65.0" />
-      <GridPane fx:id="main_scene" onMouseMoved="#CellClick" prefHeight="900.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane fx:id="main_scene" onMouseMoved="#CellClick" prefHeight="900.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="207.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
             <ColumnConstraints minWidth="45.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="45.0" prefWidth="100.0" />
@@ -102,5 +104,15 @@
       <Button fx:id="exit_simulation_button" layoutX="938.0" layoutY="127.0" mnemonicParsing="false" onMouseClicked="#ExitSimulationButtonClick" text="Завершить симуляцию" visible="false" AnchorPane.rightAnchor="25.0" />
       <Button fx:id="auto_mode_button" layoutX="996.0" layoutY="93.0" mnemonicParsing="false" onMouseClicked="#SetSimulationAutoMod" text="Авто мод" visible="false" />
       <Button fx:id="step_button" layoutX="945.0" layoutY="93.0" mnemonicParsing="false" onMouseClicked="#StepButtonClick" text="Шаг" visible="false" />
+      <TextArea fx:id="main_log" editable="false" layoutX="8.0" layoutY="695.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1115.0" />
+      <ImageView fx:id="first_print_image" fitHeight="45.0" fitWidth="45.0" layoutX="8.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
+      <TextArea fx:id="first_print_log" editable="false" layoutX="65.0" layoutY="18.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="5.0" />
+      <TextArea fx:id="second_print_log" editable="false" layoutX="55.0" layoutY="167.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="210.0" />
+      <ImageView fx:id="second_print_image" fitHeight="45.0" fitWidth="45.0" layoutX="28.0" layoutY="348.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="210.0" />
+      <Label fx:id="day_and_step" layoutX="14.0" layoutY="672.0" prefHeight="35.0" prefWidth="230.0" AnchorPane.bottomAnchor="205.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="1115.0" />
+      <ImageView fx:id="third_print_image" fitHeight="45.0" fitWidth="45.0" layoutX="255.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.leftAnchor="260.0" AnchorPane.topAnchor="5.0" />
+      <ImageView fx:id="fourth_print_image" fitHeight="45.0" fitWidth="45.0" layoutX="255.0" layoutY="210.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.leftAnchor="260.0" AnchorPane.topAnchor="210.0" />
+      <TextArea fx:id="third_print_log" editable="false" layoutX="283.0" layoutY="18.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.leftAnchor="310.0" AnchorPane.topAnchor="5.0" />
+      <TextArea fx:id="fourth_print_log" editable="false" layoutX="310.0" layoutY="210.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.leftAnchor="310.0" AnchorPane.topAnchor="210.0" />
    </children>
 </AnchorPane>

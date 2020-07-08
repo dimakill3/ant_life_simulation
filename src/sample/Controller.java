@@ -6,9 +6,8 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
-import javafx.application.Platform;
+import com.sun.deploy.security.SelectableSecurityManager;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -20,12 +19,16 @@ import javafx.scene.effect.BlurType;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
+
+import javax.xml.soap.Text;
 
 public class Controller {
 
@@ -171,6 +174,36 @@ public class Controller {
 
     @FXML
     private Button step_button;
+
+    @FXML
+    private TextArea main_log;
+
+    @FXML
+    private ImageView first_print_image;
+
+    @FXML
+    private TextArea first_print_log;
+
+    @FXML
+    private TextArea second_print_log;
+
+    @FXML
+    private ImageView second_print_image;
+
+    @FXML
+    private Label day_and_step;
+
+    @FXML
+    private ImageView third_print_image;
+
+    @FXML
+    private ImageView fourth_print_image;
+
+    @FXML
+    private TextArea third_print_log;
+
+    @FXML
+    private TextArea fourth_print_log;
 
     @FXML
     void ChooseApple(MouseEvent event) {
@@ -449,6 +482,89 @@ public class Controller {
             });
     }
 
+    void show_block_info()
+    {
+        main_scene.getChildren().forEach(element -> {
+            element.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if(is_simulation_in_process) {
+                        int matrixX = GridPane.getRowIndex(element);
+                        int matrixY = GridPane.getColumnIndex(element);
+
+                        for(anthill anthill : anthills)
+                        {
+                            if(anthill.getCoords().x == matrixX && anthill.getCoords().y == matrixY)
+                            {
+                                if(anthill.getAnthill_level() == 1)
+                                    first_print_image.setImage(blocks.anthill.picture);
+                                else
+                                    if(anthill.getAnthill_level() == 2)
+                                        first_print_image.setImage(blocks.anthill_lvl2.picture);
+                                    else
+                                        first_print_image.setImage(blocks.anthill_lvl3.picture);
+                            }
+
+                            first_print_log.appendText("...Муравейник...\n");
+                            first_print_log.appendText("Команда: " + anthill.getAlly() + "\n");
+                            first_print_log.appendText("Прочность: " + anthill.getDurability() + "/" + anthill_durability + "\n");
+                            first_print_log.appendText("Запасы еды: " + anthill.getCount_food() + "\n");
+                            first_print_log.appendText("Запасы воды: " + anthill.getCount_water() + "\n");
+                            first_print_log.appendText("Запасы материалов: " + anthill.getCount_materials() + "\n");
+                            first_print_log.appendText("Вместимость: " + anthill.getHow_ant() + "/" + anthill.getAnt_capacity() + "\n");
+                            first_print_log.appendText("Матка: ");
+                            if(anthill.isQueen_hungry())
+                                first_print_log.appendText("голодна, ");
+                            else
+                                first_print_log.appendText("сыта, ");
+
+                            if(anthill.isQueen_dehydration())
+                                first_print_log.appendText("обезвожена\n");
+                            else
+                                first_print_log.appendText("напоена\n");
+
+                            first_print_log.appendText("Количество яиц: " + anthill.eggs.size() + "\n");
+                            first_print_log.appendText("Пастбища тли: ");
+                            if(anthill.milk_farms.size() != 0) {
+                                for (int i = 0; i < anthill.milk_farms.size(); i++) {
+                                    first_print_log.appendText("x: " + anthill.milk_farms.get(i).x + " y: " + anthill.milk_farms.get(i).y);
+                                    if (i == anthill.milk_farms.size() - 1)
+                                        first_print_log.appendText("\n");
+                                    else
+                                        first_print_log.appendText(" ; ");
+                                }
+                            }
+                            else
+                                first_print_log.appendText("---");
+
+                            first_print_log.appendText("Ферма грибов: ");
+                            if(anthill.mushrooms_farms.size() != 0) {
+                                for (int i = 0; i < anthill.mushrooms_farms.size(); i++) {
+                                    first_print_log.appendText("x: " + anthill.mushrooms_farms.get(i).x + " y: " + anthill.mushrooms_farms.get(i).y);
+                                    if (i == anthill.mushrooms_farms.size() - 1)
+                                        first_print_log.appendText("\n");
+                                    else
+                                        first_print_log.appendText(" ; ");
+                                }
+                            }
+                            else
+                                first_print_log.appendText("---");
+
+                            first_print_log.appendText("Уровень: " + anthill.getAnthill_level() + "\n");
+
+
+                            if(anthill.getBuild_step() == 0)
+                                first_print_log.appendText("Строительство: ---\n");
+                            else
+                                first_print_log.appendText("Строительство: " + anthill.getBuild_step() + " шагов\n");
+                        }
+
+                    }
+                }
+            });
+        });
+    }
+
     void Step()
     {
         int for_random = 0;
@@ -628,7 +744,7 @@ public class Controller {
                                 //Проверяем есть ли вообще какая-нибудь еда на карте
                                 if (neutral_food.size() != 0 || culture.size() != 0) {
                                     //Муравей идёт собирать культуру, если они есть и есть урожай. Если нет, то ищем близжайшую еду
-                                    if (anthills.get(i).getMilk_farm() > 0 || anthills.get(i).getMushrooms_farm() > 0) {
+                                    if (anthills.get(i).milk_farms.size() > 0 || anthills.get(i).mushrooms_farms.size() > 0) {
                                         //Для начала выбирается культура с наибольшимколичеством еды. Сделано это для того, чтобы достичь эффективности культур
                                         //То есть чтобы все они производили еду (если бы муравей собирал только одну культуру,
                                         // то другая была бы переполнена урожаем и не могла производить еду)
@@ -1340,4 +1456,81 @@ return new Point(0, 0);
         }
 }
 
+private void print_out_ant(ant ant, TextArea area, ImageView imageView)
+{
+    imageView.setVisible(true);
+    area.setVisible(true);
+
+    if(ant.isWorker())
+    {
+        area.appendText("Роль: рабочий\n");
+        if(ant.getAction().equals(Actions.CarryFood.toString()))
+        {
+            imageView.setImage(blocks.ant_worker_with_food.picture);
+            area.appendText("Несёт " + ant.getGrab() + "ед. еды\n");
+        }
+        else
+            if(ant.getAction().equals(Actions.CarryWater.toString()))
+            {
+                imageView.setImage(blocks.ant_worker_with_water.picture);
+                area.appendText("Несёт " + ant.getGrab() + "ед. воды\n");
+            }
+            else
+                if(ant.getAction().equals(Actions.CarryMaterial.toString()))
+                {
+                    imageView.setImage(blocks.ant_worker_with_material.picture);
+                    area.appendText("Несёт " + ant.getGrab() + "ед. материалов\n");
+                }
+                else
+                {
+                    imageView.setImage(blocks.ant_worker.picture);
+
+                    if(ant.getAction().equals(Actions.GoToFood.toString()))
+                        area.appendText("Идёт за едой: " + "x: " + ant.getPurpose().x + " y: " + ant.getPurpose().y + "\n");
+                    else
+                    if(ant.getAction().equals(Actions.GoToWater.toString()))
+                        area.appendText("Идёт за водой: " + "x: " + ant.getPurpose().x + " y: " + ant.getPurpose().y + "\n");
+                    else
+                    if(ant.getAction().equals(Actions.GoToMaterial.toString()))
+                        area.appendText("Идёт за материалами: " + "x: " + ant.getPurpose().x + " y: " + ant.getPurpose().y + "\n");
+                    else
+                    if(ant.getAction().equals(Actions.Repair.toString()))
+                        area.appendText("Чинит муравейник\n");
+                    else
+                    if(ant.getAction().equals(Actions.Build.toString()))
+                        area.appendText("Строит муравейник\n");
+                }
+    }
+    else
+    {
+        imageView.setImage(blocks.ant_fighter.picture);
+        area.appendText("Роль: воин\n");
+
+        if(ant.getAction().equals(Actions.Attack.toString()))
+            area.appendText("Идёт в атаку\n");
+
+        if(ant.getAction().equals(Actions.PatrolEggs.toString()))
+            area.appendText("Охраняет яйца\n");
+
+        if(ant.getAction().equals(Actions.PatrolAnthill.toString()))
+            area.appendText("Патрулирует вокруг муравейника\n");
+    }
+
+    imageView.setViewport(new Rectangle2D(ant.getSprite_cut().x, ant.getSprite_cut().y, image_width, image_height));
+
+    area.appendText("Координаты: " + "x: " + ant.getCoords().x + " y: " + ant.getCoords().y + "\n");
+    area.appendText("Здоровье: " + ant.getHealth() + "/" + ant.getMaxHealth() + "\n");
+    area.appendText("Сила: " + ant.getStrength() + "\n");
+    area.appendText("Интеллект: " + ant.getIntellect() + "\n");
+    area.appendText("Муравей: ");
+    if(ant.isHungry())
+        first_print_log.appendText("голоден, ");
+    else
+        first_print_log.appendText("сыт, ");
+
+    if(ant.isDehydration())
+        first_print_log.appendText("обезвожен\n");
+    else
+        first_print_log.appendText("напоен\n");
+}
 }
