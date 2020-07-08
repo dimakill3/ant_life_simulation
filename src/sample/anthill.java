@@ -1,10 +1,11 @@
 package sample;
 
-import javafx.util.Pair;
-
 import java.awt.*;
+import java.util.Vector;
 
 public class anthill extends objects{
+    public Vector<ant> ants;
+    public Vector<Point> eggs;
     private boolean queen_hungry;
     private boolean queen_dehydration;
     private int ant_capacity;
@@ -26,6 +27,8 @@ public class anthill extends objects{
     public anthill(Point coords, int durability, int id, int ally)
     {
         super(coords, durability, id);
+        this.ants = new Vector<>();
+        this.eggs = new Vector<>();
         this.anthill_level = 1;
         this.ant_capacity = 7;
         this.how_ant = 0;
