@@ -6,20 +6,27 @@ import java.util.Vector;
 public class anthill extends objects{
     public Vector<ant> ants;
     public Vector<Point> eggs;
+
     private boolean queen_hungry;
     private boolean queen_dehydration;
+
+    private int how_ant_workers;
     private int ant_capacity;
     private int how_ant;
-    private int count_of_eggs;
-    private int anthill_level;
     private boolean guard;
+
+    private int anthill_level;
+
     private int Max_milk_farms;
     private int Max_mushrooms_farms;
-    public Vector<Point> milk_farms;
-    public Vector<Point> mushrooms_farms;
+    private int count_milk_farms;
+    private int count_mushrooms_farms;
+    public Vector<food> farms;
+
     private int count_food;
     private int count_water;
     private int count_materials;
+
     private final int ally;
     private int build_step;
     private final int lvlUp_steps = 20;
@@ -27,38 +34,32 @@ public class anthill extends objects{
     public anthill(Point coords, int durability, int id, int ally)
     {
         super(coords, durability, id);
+
         this.ants = new Vector<>();
         this.eggs = new Vector<>();
+
         this.anthill_level = 1;
+
         this.ant_capacity = 7;
         this.how_ant = 0;
-        this.count_of_eggs = 0;
+        this.how_ant_workers = 0;
         this.guard = false;
-        this.count_food = 10;
-        this.count_water = 10;
-        this.count_materials = 10;
+
+        this.count_food = 20;
+        this.count_water = 30;
+        this.count_materials = 20;
+
         this.ally = ally;
         this.build_step = 0;
+
         this.queen_hungry = false;
         this.queen_dehydration = false;
+
         this.Max_milk_farms = 1;
         this.Max_mushrooms_farms = 1;
-        this.milk_farms = new Vector<>();
-        this.mushrooms_farms = new Vector<>();
-    }
-
-    public void IncCount_of_eggs() {
-        if(this.how_ant + this.count_of_eggs < this.ant_capacity)
-        this.count_of_eggs++;
-    }
-
-    public void DecCount_of_eggs() {
-       if(this.count_of_eggs != 0)
-        this.count_of_eggs--;
-    }
-
-    public int getCount_of_eggs() {
-        return count_of_eggs;
+        this.count_milk_farms = 0;
+        this.count_mushrooms_farms = 0;
+        this.farms = new Vector<>();
     }
 
     public void setGuard(boolean guard) {
@@ -178,6 +179,14 @@ public class anthill extends objects{
         this.how_ant++;
     }
 
+    public int getHow_ant_workers() {
+        return how_ant_workers;
+    }
+
+    public void IncHow_ant_workers() {
+        this.how_ant_workers++;
+    }
+
     public void DecHow_ant() {
         this.how_ant--;
     }
@@ -190,12 +199,20 @@ public class anthill extends objects{
         return Max_mushrooms_farms;
     }
 
-    public void IncMax_milk_farms() {
-        Max_milk_farms++;
+    public void IncCount_milk_farms() {
+        this.count_milk_farms++;
     }
 
-    public void IncMax_mushrooms_farms() {
-        Max_mushrooms_farms++;
+    public void DecCount_milk_farms() {
+        this.count_milk_farms--;
+    }
+
+    public int getCount_milk_farms() {
+        return count_milk_farms;
+    }
+
+    public int getCount_mushrooms_farms() {
+        return count_mushrooms_farms;
     }
 }
 

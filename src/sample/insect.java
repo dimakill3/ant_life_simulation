@@ -195,7 +195,7 @@ public class insect {
 
         for(int i = 0; i < Controller.Scene_blocks; i++)
             for(int j = 0; j < Controller.Scene_blocks; j++)
-                if(place.x != i && place.y != j && matrixWay[i][j] > 999 && matrixWay[i][j] <= 1003)
+                if(place.x != i && place.y != j && matrixWay[i][j] > 999 && matrixWay[i][j] <= 1005)
                     matrixWay[i][j] = 999;
 
         matrixWay[purpose.x][purpose.y] = -1;

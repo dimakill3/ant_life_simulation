@@ -1,7 +1,5 @@
 package sample;
 
-import javafx.util.Pair;
-
 import java.awt.*;
 
 public class food extends objects{
@@ -41,6 +39,10 @@ public class food extends objects{
         }
     }
 
+    public void setUsable(int usable) {
+        this.usable = usable;
+    }
+
     public int getUsable() {
         return usable;
     }
@@ -48,6 +50,10 @@ public class food extends objects{
 
     public boolean isCulture() {
         return culture;
+    }
+
+    public void setCulture(boolean culture) {
+        this.culture = culture;
     }
 
     public int getMaxUsable() {

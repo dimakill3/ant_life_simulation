@@ -1,7 +1,5 @@
 package sample;
 
-import javafx.util.Pair;
-
 import java.awt.*;
 
 public class objects {
@@ -28,7 +26,7 @@ public class objects {
 
     public void IncDurability(int durability) {
         if(this.durability + durability >= MaxDurability)
-            this.durability = durability;
+            this.durability = MaxDurability;
         else
             this.durability += durability;
     }
@@ -45,7 +43,15 @@ public class objects {
         }
     }
 
+    public int getMaxDurability() {
+        return MaxDurability;
+    }
+
     public int getDurability() {
         return durability;
+    }
+
+    public int getId() {
+        return id;
     }
 }
