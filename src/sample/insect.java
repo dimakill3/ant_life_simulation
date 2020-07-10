@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.scene.Scene;
+
 import java.awt.*;
 import java.util.Vector;
 
@@ -11,7 +13,6 @@ public class insect {
     private String action;
     private Point purpose;
     private Point coords;
-    private boolean dead = false;
     public Vector<Point> way;
     private int[][] matrixWay;
     private Point sprite_cut;
@@ -47,11 +48,13 @@ public class insect {
         this.health = health;
     }
 
-    public void DecHealth(int health) {
+    public boolean DecHealth(int health) {
         this.health -= health;
 
-        if(this.health < 0)
-            dead = true;
+        if(this.health <= 0)
+            return true;
+        else
+            return false;
     }
 
     public void IncHealth(int health) {
@@ -112,6 +115,7 @@ public class insect {
     public void WavePropagation(int item_id) {  // распространение волны
         int markNumber = 0;
         boolean finished = false;
+        Point coord = new Point(- 1, -1);
 
         matrixWay[this.coords.x][this.coords.y] = 0;
 
@@ -120,72 +124,101 @@ public class insect {
                 if (matrixWay[i][j] > 999 && matrixWay[i][j] <= 1005 && matrixWay[i][j] != item_id)
                     matrixWay[i][j] = 999;
 
-        do {
-            for (int i = 0; i < Controller.Scene_blocks; i++) {
-                for (int j = 0; j < Controller.Scene_blocks; j++) {
-                    if (matrixWay[i][j] == markNumber) {
-                        if (i != Controller.Scene_blocks - 1)
-                            if (matrixWay[i + 1][j] == -1) matrixWay[i + 1][j] = markNumber + 1;
-                        if (j != Controller.Scene_blocks - 1)
-                            if (matrixWay[i][j + 1] == -1) matrixWay[i][j + 1] = markNumber + 1;
-                        if (i != 0)
-                            if (matrixWay[i - 1][j] == -1) matrixWay[i - 1][j] = markNumber + 1;
-                        if (j != 0)
-                            if (matrixWay[i][j - 1] == -1) matrixWay[i][j - 1] = markNumber + 1;
-                        //по углам
-                        if ((i != Controller.Scene_blocks - 1) && (j != Controller.Scene_blocks - 1) && matrixWay[i + 1][j] != 999  && matrixWay[i][j + 1] != 999) //справа снизу
-                            if (matrixWay[i + 1][j + 1] == -1) matrixWay[i + 1][j + 1] = markNumber + 1;
+do {
+    for (int i = 0; i < Controller.Scene_blocks; i++) {
+        for (int j = 0; j < Controller.Scene_blocks; j++) {
+            if (matrixWay[i][j] == markNumber) {
 
-                        if (j != Controller.Scene_blocks - 1 && i != 0  && matrixWay[i - 1][j] != 999 && matrixWay[i][j + 1] != 999) //справа сверху
-                            if (matrixWay[i - 1][j + 1] == -1) matrixWay[i - 1][j + 1] = markNumber + 1;
-
-                        if (i != 0 && j != 0 && matrixWay[i - 1][j] != 999 && matrixWay[i][j - 1] != 999) //слева сверху
-                            if (matrixWay[i - 1][j - 1] == -1) matrixWay[i - 1][j - 1] = markNumber + 1;
-
-                        if (i != Controller.Scene_blocks - 1 && j != 0 &&
-                                matrixWay[i + 1][j] != 999 && matrixWay[i][j - 1] != 999) //слева снизу
-                            if (matrixWay[i + 1][j - 1] == -1) matrixWay[i + 1][j - 1] = markNumber + 1;
+                if (i + 1 != Controller.Scene_blocks) {
+                    if (matrixWay[i + 1][j] == -1) matrixWay[i + 1][j] = markNumber + 1;
+                    else if (matrixWay[i + 1][j] == item_id) {
+                        finished = true;
+                        coord = new Point(i + 1, j);
+                        break;
                     }
+                }
 
-                    if(matrixWay[i][j] == item_id &&
-                            ((i != Controller.Scene_blocks - 1 && matrixWay[i + 1][j] >= 0 && matrixWay[i + 1][j] < 999) ||
-                                    (j != Controller.Scene_blocks - 1 && matrixWay[i][j + 1] >= 0 && matrixWay[i][j + 1] < 999) ||
-                                    (i != 0 && matrixWay[i - 1][j] >= 0 && matrixWay[i - 1][j] < 999) ||
-                                    (j != 0 && matrixWay[i][j - 1] >= 0 && matrixWay[i][j - 1] < 999) ||
-                                    (i != Controller.Scene_blocks - 1 && j != Controller.Scene_blocks - 1 && matrixWay[i + 1][j + 1] >= 0 && matrixWay[i + 1][j + 1] < 999) ||
-                                    (i != 0 && j != Controller.Scene_blocks - 1 && matrixWay[i - 1][j + 1] >= 0 && matrixWay[i - 1][j + 1] < 999) ||
-                                    (i != Controller.Scene_blocks - 1 && j != 0 && matrixWay[i + 1][j - 1] >= 0 && matrixWay[i + 1][j - 1] < 999) ||
-                                    (i != 0 && j != 0 && matrixWay[i - 1][j - 1] >= 0 && matrixWay[i - 1][j - 1] < 999)))
-                    {
-                        if(((i != Controller.Scene_blocks - 1 && matrixWay[i + 1][j] == 0) ||
-                                (j != Controller.Scene_blocks - 1 && matrixWay[i][j + 1] == 0) ||
-                                (i != 0 && matrixWay[i - 1][j] == 0) ||
-                                (j != 0 && matrixWay[i][j - 1] == 0) ||
-                                (i != Controller.Scene_blocks - 1 && j != Controller.Scene_blocks - 1 && matrixWay[i + 1][j + 1] == 0) ||
-                                (i != 0 && j != Controller.Scene_blocks - 1 && matrixWay[i - 1][j + 1] == 0) ||
-                                (i != Controller.Scene_blocks - 1 && j != 0 && matrixWay[i + 1][j - 1] == 0) ||
-                                (i != 0 && j != 0 && matrixWay[i - 1][j - 1] == 0)))
-                        {
-                            this.matrixWay[i][j] = markNumber + 1;
-                            finished = true;
-                            way.clear();
-                            Add_Way(i, j, markNumber + 1);
-                            return;
-                        }
-                        else
-                        {
-                            this.matrixWay[i][j] = markNumber + 2;
-                            finished = true;
-                            way.clear();
-                            Add_Way(i, j, markNumber + 2);
-                            return;
-                        }
+                if (i - 1 != 0) {
+                    if (matrixWay[i - 1][j] == -1) matrixWay[i - 1][j] = markNumber + 1;
+                    else if (matrixWay[i - 1][j] == item_id) {
+                        finished = true;
+                        coord = new Point(i - 1, j);
+                        break;
+                    }
+                }
+
+                if (j + 1 != Controller.Scene_blocks) {
+                    if (matrixWay[i][j + 1] == -1) matrixWay[i][j + 1] = markNumber + 1;
+                    else if (matrixWay[i][j + 1] == item_id) {
+                        finished = true;
+                        coord = new Point(i, j + 1);
+                        break;
+                    }
+                }
+
+                if (j - 1 != 0) {
+                    if (matrixWay[i][j - 1] == -1) matrixWay[i][j - 1] = markNumber + 1;
+                    else if (matrixWay[i][j - 1] == item_id) {
+                        finished = true;
+                        coord = new Point(i, j - 1);
+                        break;
+                    }
+                }
+
+                if (i + 1 != Controller.Scene_blocks && j + 1 != Controller.Scene_blocks) {
+                    if (matrixWay[i + 1][j + 1] == -1)
+                        matrixWay[i + 1][j + 1] = markNumber + 1;
+                    else if (matrixWay[i + 1][j + 1] == item_id) {
+                        finished = true;
+                        coord = new Point(i + 1, j + 1);
+                        break;
+                    }
+                }
+
+                if (i + 1 != Controller.Scene_blocks && j - 1 != 0) {
+                    if (matrixWay[i + 1][j - 1] == -1)
+                        matrixWay[i + 1][j - 1] = markNumber + 1;
+                    else if (matrixWay[i + 1][j - 1] == item_id) {
+                        finished = true;
+                        coord = new Point(i + 1, j - 1);
+                        break;
+                    }
+                }
+
+                if (i - 1 != 0 && j + 1 != Controller.Scene_blocks) {
+                    if (matrixWay[i - 1][j + 1] == -1)
+                        matrixWay[i - 1][j + 1] = markNumber + 1;
+                    else if (matrixWay[i - 1][j + 1] == item_id) {
+                        finished = true;
+                        coord = new Point(i - 1, j + 1);
+                        break;
+                    }
+                }
+
+                if (i - 1 != 0 && j - 1 != 0) {
+                    if (matrixWay[i - 1][j - 1] == -1) matrixWay[i - 1][j - 1] = markNumber + 1;
+                    else if (matrixWay[i - 1][j - 1] == item_id) {
+                        finished = true;
+                        coord = new Point(i - 1, j - 1);
+                        break;
                     }
                 }
             }
-            markNumber++;
-        }while (!finished && markNumber < Controller.Scene_blocks* Controller.Scene_blocks);
+        }
+        if(finished) {
+            matrixWay[coord.x][coord.y] = markNumber + 1;
+            way.clear();
+            Add_Way(coord.x, coord.y, markNumber + 1);
+            break;
+        }
     }
+    markNumber++;
+
+}while(!finished && markNumber < Controller.Scene_blocks* Controller.Scene_blocks);
+
+
+    }
+
 
     public void WavePropagation(Point place) {  // распространение волны
         int markNumber = 0;
@@ -259,19 +292,19 @@ public class insect {
                     Add_Way(_target_X - 1, _target_Y, _markNumber);
                 }
             //по углам
-            if (_target_Y < Controller.Scene_blocks - 1 && _target_X < Controller.Scene_blocks - 1 && matrixWay[_target_X + 1][_target_Y] != 999 && matrixWay[_target_X][_target_Y + 1] != 999) //Справа снизу
+            if (_target_Y < Controller.Scene_blocks - 1 && _target_X < Controller.Scene_blocks - 1) //Справа снизу
                 if (matrixWay[_target_X + 1][_target_Y + 1] == matrixWay[_target_X][_target_Y] - 1) {
                     Add_Way(_target_X + 1, _target_Y + 1, _markNumber);
                 }
-            if (_target_Y > 0 && _target_X < Controller.Scene_blocks - 1  && matrixWay[_target_X + 1][_target_Y] != 999 && matrixWay[_target_X][_target_Y - 1] != 999)//Слева снизу
+            if (_target_Y > 0 && _target_X < Controller.Scene_blocks - 1 )//Слева снизу
                 if (matrixWay[_target_X + 1][_target_Y - 1] == matrixWay[_target_X][_target_Y] - 1) {
                     Add_Way(_target_X + 1, _target_Y - 1, _markNumber);
                 }
-            if (_target_Y < Controller.Scene_blocks - 1 && _target_X > 0  && matrixWay[_target_X - 1][_target_Y] != 999 && matrixWay[_target_X][_target_Y + 1] != 999)//Сверху справа
+            if (_target_Y < Controller.Scene_blocks - 1 && _target_X > 0 )//Сверху справа
                 if (matrixWay[_target_X - 1][_target_Y + 1] == matrixWay[_target_X][_target_Y] - 1) {
                     Add_Way(_target_X - 1, _target_Y + 1, _markNumber);
                 }
-            if (_target_X > 0 && _target_Y > 0  && matrixWay[_target_X - 1][_target_Y] != 999 && matrixWay[_target_X][_target_Y - 1] != 999) //Сверху слева
+            if (_target_X > 0 && _target_Y > 0) //Сверху слева
                 if (matrixWay[_target_X - 1][_target_Y - 1] == matrixWay[_target_X][_target_Y] - 1 ) {
                     Add_Way(_target_X - 1, _target_Y - 1, _markNumber);
                 }

@@ -31,11 +31,11 @@ public class food extends objects{
     public boolean DecUsable(int usable) {
         if(this.usable - usable > 0) {
             this.usable -= usable;
-            return true;
+            return false;
         }
         else {
             this.usable = 0;
-            return false;
+            return true;
         }
     }
 
@@ -66,5 +66,13 @@ public class food extends objects{
 
     public boolean isFarmer() {
         return farmer;
+    }
+
+    public void setAlly(int ally) {
+        this.ally = ally;
+    }
+
+    public int getAlly() {
+        return ally;
     }
 }

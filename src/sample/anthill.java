@@ -40,7 +40,7 @@ public class anthill extends objects{
 
         this.anthill_level = 1;
 
-        this.ant_capacity = 7;
+        this.ant_capacity = 6;
         this.how_ant = 0;
         this.how_ant_workers = 0;
         this.guard = false;
@@ -140,7 +140,7 @@ public class anthill extends objects{
     public void LevelUp()
     {
         this.anthill_level++;
-        ant_capacity += 4;
+        ant_capacity += 3;
         if(this.anthill_level == 3) {
             Max_milk_farms++;
             Max_mushrooms_farms++;
@@ -187,6 +187,10 @@ public class anthill extends objects{
         this.how_ant_workers++;
     }
 
+    public void DecHow_ant_workers() {
+        this.how_ant_workers--;
+    }
+
     public void DecHow_ant() {
         this.how_ant--;
     }
@@ -213,6 +217,14 @@ public class anthill extends objects{
 
     public int getCount_mushrooms_farms() {
         return count_mushrooms_farms;
+    }
+
+    public void IncCount_mushrooms_farms() {
+        this.count_mushrooms_farms++;
+    }
+
+    public void DecCount_mushrooms_farms() {
+        this.count_mushrooms_farms--;
     }
 }
 
