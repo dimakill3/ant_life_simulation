@@ -1,7 +1,5 @@
 package sample;
 
-import javafx.scene.Scene;
-
 import java.awt.*;
 import java.util.Vector;
 
@@ -68,10 +66,6 @@ public class insect {
         return health;
     }
 
-    public void setStrength(int strength) {
-        this.strength = strength;
-    }
-
     public int getStrength() {
         return strength;
     }
@@ -121,7 +115,7 @@ public class insect {
 
         for(int i = 0; i < Controller.Scene_blocks; i++)
             for(int j = 0; j < Controller.Scene_blocks; j++)
-                if (matrixWay[i][j] > 999 && matrixWay[i][j] <= 1005 && matrixWay[i][j] != item_id)
+                if (matrixWay[i][j] > 999 && matrixWay[i][j] <= 1006 && matrixWay[i][j] != item_id)
                     matrixWay[i][j] = 999;
 
 do {
@@ -228,7 +222,7 @@ do {
 
         for(int i = 0; i < Controller.Scene_blocks; i++)
             for(int j = 0; j < Controller.Scene_blocks; j++)
-                if(place.x != i && place.y != j && matrixWay[i][j] > 999 && matrixWay[i][j] <= 1005)
+                if(place.x != i && place.y != j && matrixWay[i][j] > 999 && matrixWay[i][j] <= 1006)
                     matrixWay[i][j] = 999;
 
         matrixWay[purpose.x][purpose.y] = -1;
@@ -262,9 +256,12 @@ do {
                             finished = true;
                             this.way.clear();
                             Add_Way(this.purpose.x, this.purpose.y, markNumber + 1);
+                            break;
                         }
                     }
                 }
+                if(finished)
+                    break;
             }
             markNumber++;
         }while (!finished && markNumber < Controller.Scene_blocks* Controller.Scene_blocks);

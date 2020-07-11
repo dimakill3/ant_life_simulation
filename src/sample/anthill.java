@@ -226,5 +226,33 @@ public class anthill extends objects{
     public void DecCount_mushrooms_farms() {
         this.count_mushrooms_farms--;
     }
+
+    private void add_new_ant()
+    {
+        int intellect;
+        int strength;
+
+        if(getHow_ant_workers() < 4 + (getAnthill_level() - 1) * 2 &&
+                getHow_ant() != 2 && getHow_ant() != 5) {
+
+            do {
+                intellect = Controller.randomize(Controller.min_characteristic, Controller.max_characteristic);
+                strength = Controller.randomize(Controller.min_characteristic, Controller.max_characteristic);
+
+            }while(intellect <= strength);
+
+            IncHow_ant_workers();
+        }
+        else {
+            do {
+                intellect = Controller.randomize(Controller.min_characteristic, Controller.max_characteristic);
+                strength = Controller.randomize(Controller.min_characteristic, Controller.max_characteristic);
+
+            }while(intellect > strength);
+        }
+
+        ants.add(new ant(Controller.randomize(Controller.min_ant_health, Controller.max_ant_health), strength, intellect, getCoords()));
+        IncHow_ant();
+    }
 }
 

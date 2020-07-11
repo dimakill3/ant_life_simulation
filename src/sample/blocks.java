@@ -15,13 +15,11 @@ public enum blocks {
 
     public final int number;
     public final Image picture;
-    public final int count_spawn_food = 3;
-    public final int count_spawn_material = 2;
 
 
     blocks(int number, String url){
         this.number = number;
-        if(number == 8 || number == 9 || number == 10 || number == 11 || number == 12)
+        if(number == 8 || number == 9 || number == 10 || number == 11 || number == 12 || number == 15)
             this.picture = new Image(url);
         else
         this.picture = new Image(url, Controller.image_width, Controller.image_height, true, false);

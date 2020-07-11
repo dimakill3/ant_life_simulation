@@ -60,14 +60,6 @@ public class food extends objects{
         return MaxUsable;
     }
 
-    public void setFarmer(boolean farmer) {
-        this.farmer = farmer;
-    }
-
-    public boolean isFarmer() {
-        return farmer;
-    }
-
     public void setAlly(int ally) {
         this.ally = ally;
     }
