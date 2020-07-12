@@ -16,10 +16,6 @@ public class objects {
         this.coords = coords;
     }
 
-    public void setCoords(Point coords) {
-        this.coords = coords;
-    }
-
     public Point getCoords() {
         return coords;
     }

@@ -132,7 +132,7 @@ do {
                     }
                 }
 
-                if (i - 1 != 0) {
+                if (i - 1 != -1) {
                     if (matrixWay[i - 1][j] == -1) matrixWay[i - 1][j] = markNumber + 1;
                     else if (matrixWay[i - 1][j] == item_id) {
                         finished = true;
@@ -150,7 +150,7 @@ do {
                     }
                 }
 
-                if (j - 1 != 0) {
+                if (j - 1 != -1) {
                     if (matrixWay[i][j - 1] == -1) matrixWay[i][j - 1] = markNumber + 1;
                     else if (matrixWay[i][j - 1] == item_id) {
                         finished = true;
@@ -169,7 +169,7 @@ do {
                     }
                 }
 
-                if (i + 1 != Controller.Scene_blocks && j - 1 != 0) {
+                if (i + 1 != Controller.Scene_blocks && j - 1 != -1) {
                     if (matrixWay[i + 1][j - 1] == -1)
                         matrixWay[i + 1][j - 1] = markNumber + 1;
                     else if (matrixWay[i + 1][j - 1] == item_id) {
@@ -179,7 +179,7 @@ do {
                     }
                 }
 
-                if (i - 1 != 0 && j + 1 != Controller.Scene_blocks) {
+                if (i - 1 != -1 && j + 1 != Controller.Scene_blocks) {
                     if (matrixWay[i - 1][j + 1] == -1)
                         matrixWay[i - 1][j + 1] = markNumber + 1;
                     else if (matrixWay[i - 1][j + 1] == item_id) {
@@ -189,7 +189,7 @@ do {
                     }
                 }
 
-                if (i - 1 != 0 && j - 1 != 0) {
+                if (i - 1 != -1 && j - 1 != -1) {
                     if (matrixWay[i - 1][j - 1] == -1) matrixWay[i - 1][j - 1] = markNumber + 1;
                     else if (matrixWay[i - 1][j - 1] == item_id) {
                         finished = true;
@@ -212,7 +212,6 @@ do {
 
 
     }
-
 
     public void WavePropagation(Point place) {  // распространение волны
         int markNumber = 0;
@@ -308,12 +307,4 @@ do {
         }
     }
 
-    void print_wave(){
-        for (int i = 0; i < Controller.Scene_blocks; i++){
-            for (int j = 0; j < Controller.Scene_blocks; j++){
-                System.out.printf("%3d", matrixWay[i][j]);
-            }
-            System.out.println();
-        }
-    }
 }

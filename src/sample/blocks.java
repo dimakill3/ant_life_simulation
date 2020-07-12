@@ -9,7 +9,7 @@ public enum blocks {
     mushrooms(7, "/sample/images/mushrooms.png"), ant_worker(8, "/sample/images/ant_worker_sprite.png"),
     ant_worker_with_food(9, "/sample/images/ant_worker_with_food_sprite.png"), ant_worker_with_water(10, "/sample/images/ant_worker_with_water_sprite.png"),
     ant_worker_with_material(11, "/sample/images/ant_worker_with_material_sprite.png"), ant_fighter(12, "/sample/images/ant_fighter_sprite.png"),
-    anthill_lvl2(13, "/sample/images/anthill_lv2.png"), anthill_lvl3(14, "/sample/images/anthill_lv3.png"),
+    anthill_lvl2(13, "/sample/images/anthill_lv2.1.png"), anthill_lvl3(14, "/sample/images/anthill_lv3.1.png"),
     spider(15, "/sample/images/spider_sprite.png");
 
 

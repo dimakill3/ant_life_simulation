@@ -13,13 +13,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -32,28 +32,24 @@ public class Controller {
 
     public static int image_width = 45;
     public static int image_height = 45;
-    private String img_url = "/sample/images/grass.jpg";
-    private Image filling_picture = new Image(img_url, image_width, image_height, true, false);
+    private Image filling_picture;
     private InnerShadow night = new InnerShadow();
     private InnerShadow rain = new InnerShadow();
-    private Thread auto_step;
-    private Runnable r;
 
     public final static Integer Scene_blocks = 20;
 
     private boolean is_building_in_process = false;
     private boolean is_simulation_in_process = false;
-    private boolean auto_mod = false;
 
 
     private int filling_block = blocks.grass.number;
     private int[][] main_array = new int[Scene_blocks][Scene_blocks];
     private int[][] matrixWays = new int[Scene_blocks][Scene_blocks];
+    private int[][] map = new int[Scene_blocks][Scene_blocks];
 
     Vector<Point> Empty_place = new Vector<>();
 
     private Vector<anthill> anthills = new Vector<>();
-    private Vector<food> culture = new Vector<>();
     private Vector<food> neutral_food = new Vector<>();
     private Vector<objects> materials = new Vector<>();
     private Vector<objects> water = new Vector<>();
@@ -69,26 +65,28 @@ public class Controller {
     private final int enemy_in_wave_algorithm_id = 1005;
     private final int cultures_in_wave_algorithm_id = 1006;
 
-    private final int min_material_durability = 9; //30
-    private final int max_material_durability = 9; //40
+    private final int min_material_durability = 30; //30
+    private final int max_material_durability = 40; //40
 
-    private final int min_water_durability = 9;    //80
-    private final int max_water_durability = 9;   //100
+    private final int min_water_durability = 60;    //80
+    private final int max_water_durability = 70;   //100
 
-    private final int min_food_durability = 2;      //6
-    private final int max_food_durability = 2;     //12
+    private final int min_food_durability = 4;      //6
+    private final int max_food_durability = 6;     //12
 
-    private final int min_food_usable = 9;     //30
-    private final int max_food_usable = 9;     //30
+    private final int min_food_usable = 30;     //30
+    private final int max_food_usable = 40;     //30
 
     private final int how_step_to_born = 80;
 
     private final int anthill_durability = 100;
 
-    protected static final int min_characteristic = 2;
+    protected static final int min_characteristic = 4;
     protected static final int max_characteristic = 10;
     protected static final int min_ant_health = 25;
     protected static final int max_ant_health = 50;
+    protected static final int max_enemy_health = 20;
+    protected static final int min_enemy_health = 40;
 
     private int anthill_count = 0;
     private final int MaxAnthillCount = 2;
@@ -101,7 +99,7 @@ public class Controller {
     private int[] anthill_levelUp_materials = {40, 80};
     private int[] anthill_levelUp_water = {20, 40};
 
-    private int begin_count_of_ants = 1;
+    private int begin_count_of_ants;
 
     private final int Dec_anthill_durability = 5;
     private final int how_materials_need_to_repair = 1;
@@ -152,9 +150,6 @@ public class Controller {
     private ImageView image_stick;
 
     @FXML
-    private ImageView image_insect_flower;
-
-    @FXML
     private Button apply_map_button;
 
     @FXML
@@ -165,9 +160,6 @@ public class Controller {
 
     @FXML
     private Button exit_simulation_button;
-
-    @FXML
-    private Button auto_mode_button;
 
     @FXML
     private Button step_button;
@@ -201,6 +193,12 @@ public class Controller {
 
     @FXML
     private TextArea fourth_print_log;
+
+    @FXML
+    private Spinner<Integer> Spinner_how_begin_ants;
+
+    @FXML
+    private Label SpinnerLabel;
 
     @FXML
     void ChooseApple(MouseEvent event) {
@@ -245,12 +243,6 @@ public class Controller {
     }
 
     @FXML
-    void ChooseInsectFlower(MouseEvent event) {
-        filling_picture = blocks.infected_plant.picture;
-        filling_block = blocks.infected_plant.number;
-    }
-
-    @FXML
     void CellClick(MouseEvent event) {
         if(is_building_in_process) {
             change_picture();
@@ -274,10 +266,11 @@ public class Controller {
         image_apple.setVisible(true);
         image_flower.setVisible(true);
         image_grass.setVisible(true);
-        image_insect_flower.setVisible(true);
         image_water.setVisible(true);
         image_mushrooms.setVisible(true);
         apply_map_button.setVisible(true);
+        Spinner_how_begin_ants.setVisible(true);
+        SpinnerLabel.setVisible(true);
 
         is_building_in_process = true;
 
@@ -293,10 +286,11 @@ public class Controller {
         image_apple.setVisible(false);
         image_flower.setVisible(false);
         image_grass.setVisible(false);
-        image_insect_flower.setVisible(false);
         image_water.setVisible(false);
         image_mushrooms.setVisible(false);
         apply_map_button.setVisible(false);
+        Spinner_how_begin_ants.setVisible(false);
+        SpinnerLabel.setVisible(false);
 
         is_building_in_process = false;
     }
@@ -324,10 +318,12 @@ public class Controller {
 
         exit_simulation_button.setVisible(true);
         step_button.setVisible(true);
-        auto_mode_button.setVisible(true);
 
         is_simulation_in_process = true;
         int anthill_index = 0;
+
+
+        begin_count_of_ants = Spinner_how_begin_ants.getValue();
 
         for(int i = 0; i < Scene_blocks; i++)
             for(int j = 0; j < Scene_blocks; j++)
@@ -337,9 +333,9 @@ public class Controller {
                         anthills.add(new anthill(new Point(i, j), anthill_durability, main_array[i][j], anthill_index));
 
                         for(int k = 0; k < begin_count_of_ants; k++) {
-                            //add_new_ant(anthills.get(anthill_index));
-                            anthills.get(anthill_index).ants.add(new ant(50, 8,2, new Point(anthills.get(anthill_index).getCoords())));
-                            anthills.get(anthill_index).ants.add(new ant(50, 8,2, new Point(anthills.get(anthill_index).getCoords())));
+                            anthills.get(anthill_index).add_new_ant();
+                            //anthills.get(anthill_index).ants.add(new ant(10, 1,0, anthills.get(anthill_index).getCoords()));
+                            //anthills.get(anthill_index).IncHow_ant();
                         }
 
                         matrixWays[i][j] = anthill_in_wave_algorithm_id;
@@ -373,6 +369,10 @@ public class Controller {
             day_and_step.setText("День " + day + " Шаг " + step);
             is_rain = 0;
             is_night = false;
+            map = main_array.clone();
+
+            for(int i = 0; i < map.length; i++)
+                map[i] = main_array[i].clone();
     }
 
     @FXML
@@ -380,24 +380,21 @@ public class Controller {
         start_simulation_button.setVisible(true);
         build_map_button.setVisible(true);
 
+        set_map();
+
+        Empty_place.clear();
+        neutral_food.clear();
+        water.clear();
+        materials.clear();
+        anthills.clear();
+        enemy.clear();
+
+
         exit_simulation_button.setVisible(false);
         step_button.setVisible(false);
-        auto_mode_button.setVisible(false);
         main_log.clear();
         clear_logs();
         day_and_step.setText("");
-    }
-
-    @FXML
-    void SetSimulationAutoMod(MouseEvent event) {
-        /*if(auto_mod) {
-            auto_mod = false;
-        }
-        else {
-            auto_mod = true;
-            auto_step = new Thread(t, "MyThread");
-            auto_step.start();
-        }*/
     }
 
     @FXML
@@ -424,31 +421,15 @@ public class Controller {
         rain.setRadius(60);
         rain.setBlurType(BlurType.THREE_PASS_BOX);
 
+        Spinner_how_begin_ants.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 6, 3));
+
+
+        filling_picture = blocks.grass.picture;
         for (int x = 0; x < Scene_blocks; x++) {
             for (int y = 0; y < Scene_blocks; y++) {
                 main_scene.add(new ImageView(filling_picture), y, x);
             }
         }
-
-
-
-       /* r = ()->{
-    do
-    {
-        if(auto_mod)	//Проверка на необходимость завершения
-        {
-            Step();
-        }
-        else
-            return;		//Завершение потока
-
-        try{
-            Thread.sleep(1000);		//Приостановка потока на 1 сек.
-        }catch(InterruptedException e){}
-    }
-    while(true);
-};*/
-
     }
 
     void change_picture()
@@ -587,8 +568,8 @@ public class Controller {
         //Для каждого объекта, который может заспавниться, есть шанс спавна
         //яблоко
         if(Empty_place.size() != 0) {
-            for_random = randomize(0, 100);
-            if (for_random >= 0 && for_random < -1) {
+            for_random = randomize(0, 120);
+            if (for_random >= 0 && for_random < chance_to_spawn_food) {
                 for_random = randomize(0, Empty_place.size());
                 Point coords = Empty_place.get(for_random);
                 //Empty_place.remove(for_random);
@@ -604,8 +585,8 @@ public class Controller {
 
         //гриб
         if(Empty_place.size() != 0) {
-            for_random = randomize(0, 100);
-            if (for_random >= 0 && for_random < -1) {
+            for_random = randomize(0, 120);
+            if (for_random >= 0 && for_random < chance_to_spawn_food) {
                 for_random = randomize(0, Empty_place.size());
                 Point coords = Empty_place.get(for_random);
                 //Empty_place.remove(for_random);
@@ -620,8 +601,8 @@ public class Controller {
 
         //растение
         if(Empty_place.size() != 0) {
-            for_random = randomize(0, 100);
-            if (for_random >= 0 && for_random < -1) {
+            for_random = randomize(0, 120);
+            if (for_random >= 0 && for_random < chance_to_spawn_material) {
                 for_random = randomize(0, Empty_place.size());
                 Point coords = Empty_place.get(for_random);
                 //Empty_place.remove(for_random);
@@ -636,8 +617,8 @@ public class Controller {
 
         //палочка
         if(Empty_place.size() != 0) {
-            for_random = randomize(0, 100);
-            if (for_random >= 0 && for_random < -1) {
+            for_random = randomize(0, 120);
+            if (for_random >= 0 && for_random < chance_to_spawn_material) {
                 for_random = randomize(0, Empty_place.size());
                 Point coords = Empty_place.get(for_random);
                 //Empty_place.remove(for_random);
@@ -652,8 +633,8 @@ public class Controller {
 
         //лужа
         if(is_rain != 0 && Empty_place.size() != 0) {
-            for_random = randomize(0, 100);
-            if (for_random >= 0 && for_random < -1) {
+            for_random = randomize(0, 120);
+            if (for_random >= 0 && for_random < chance_to_spawn_water) {
                 for_random = randomize(0, Empty_place.size());
                 Point coords = Empty_place.get(for_random);
                 //Empty_place.remove(for_random);
@@ -702,7 +683,7 @@ public class Controller {
             {
                     if(ant_count - 1 < anthill.getAnt_capacity() && anthill.getCount_food() >= (day_food_need * 2 + 2) &&
                     anthill.getCount_water() >= day_water_need) {
-                        main_log.appendText("Шаг " + step + ":" + "Матка команды " + anthill.getAlly() + " отложила яйцо");
+                        main_log.appendText("Шаг " + step + ": Матка команды " + anthill.getAlly() + " отложила яйцо\n");
 
                 if(anthill.getHow_ant_workers() < 4 + (anthill.getAnthill_level() - 1) * 2) {
                     anthill.eggs.add(new Point(how_step_to_born, how_eat_egg_worker));
@@ -722,7 +703,6 @@ public class Controller {
                 }
             }
             }
-
 
             //Узнаём, какой муравей чем занят, чтобы свободные муравьи делали полезную работу(чтобы не было так, что все муравьи, например, носят еду)
             Point[] works = new Point[5];
@@ -767,21 +747,45 @@ public class Controller {
                     is_anyone_guardian = true;
             }
 
+            Integer[] sort_cult = {0,0,0,0};
+
+            for (int k = 0; k < anthill.farms.size(); k++) {
+                sort_cult[k] = anthill.farms.get(k).getUsable();
+                for(ant ant : anthill.ants)
+                    if(ant.getAction().equals(Actions.GoToFarmFood.toString()) && ant.getPurpose().equals(anthill.farms.get(k).getCoords()))
+                        sort_cult[k] -= ant_grab_object(ant);
+            }
+
             //Планируем действия муравьёв
             for (int ant = 0; ant < anthill.ants.size(); ant++) {
 
-                //Если муравей - рабочий, то он будет либо таскать пищу, воду, материалы, разводить тлю, или строить и ремонтировать муравейник
+                //Для начала выбирается культура с наибольшим количеством еды. Сделано это для того, чтобы достичь эффективности культур
+                //То есть чтобы все они производили еду (если бы муравей собирал только одну культуру,
+                // то другая была бы переполнена урожаем и не могла производить еду)
+                Arrays.sort(sort_cult, Collections.reverseOrder());
+                int index = -1;
+                for (int k = 0; k < anthill.farms.size(); k++) {
+                    if (sort_cult[0] == anthill.farms.get(k).getUsable()) {
+                        index = k;
+                        break;
+                    }
+                }
+                //Смотрим, созрела ли культура, если созрела, то муравей сможет пойти собрать с неё урожай
+                boolean is_harvest = false;
+                if(index != -1) {
+                        if (anthill.ants.get(ant).isWorker() && anthill.ants.get(ant).getAction().equals(Actions.Wait.toString()))
+
+                    if(sort_cult[0] - ant_grab_object(anthill.ants.get(ant)) >= 0 ||
+                            (anthill.farms.get(index).getDurability() == 1 && anthill.farms.get(index).getUsable() != 0))
+                        is_harvest = true;
+                }
+
+                //Если муравей - рабочий, то он будет либо таскать пищу, воду, материалы, или строить и ремонтировать муравейник
                 if (anthill.ants.get(ant).isWorker()) {
                     //Если муравей ожидает, то даём ему работу
                     if (anthill.ants.get(ant).getAction().equals(Actions.Wait.toString())) {
 
-                        //Сначала проверяем, есть ли вообще чем заняться муравью
-                        /*if (neutral_food.size() == 0 && culture.size() == 0 && water.size() == 0 &&
-                                materials.size() == 0 && (anthill.getDurability() == anthill_durability || works[4].y == 1)
-                                && (anthill.getBuild_step() == 0 || works[3].y == 1))
-                            continue;*/
-
-                        if(anthill.getCount_food() < day_food_need - how_food_grab && neutral_food.size() != 0 || culture.size() != 0)
+                        if(anthill.getCount_food() < day_food_need - how_food_grab && (neutral_food.size() != 0 || (anthill.farms.size() != 0 && is_harvest)))
                         {
                             anthill.ants.get(ant).setAction(Actions.GoToFood.toString());
                             how_food_grab += ant_grab_object(anthill.ants.get(ant));
@@ -815,7 +819,7 @@ public class Controller {
                                             //Если это поиск еды...
                                             if (work.x == ant_on_food_id) {
                                                 //Проверяем есть ли вообще какая-нибудь еда на карте
-                                                if (neutral_food.size() != 0 || culture.size() != 0) {
+                                                if (neutral_food.size() != 0 || (anthill.farms.size() != 0 && is_harvest)) {
                                                     anthill.ants.get(ant).setAction(Actions.GoToFood.toString());
                                                     work.y++;
                                                     //Мы дали муравью работу, можно дальше не искать
@@ -879,51 +883,16 @@ public class Controller {
                     if(anthill.ants.get(ant).getAction().equals(Actions.GoToFood.toString()))
                     {
                         //Муравей идёт собирать культуру, если они есть и есть урожай. Если нет, то ищем близжайшую еду
-                        if (anthill.farms.size() != 0) {
-                            //Для начала выбирается культура с наибольшимколичеством еды. Сделано это для того, чтобы достичь эффективности культур
-                            //То есть чтобы все они производили еду (если бы муравей собирал только одну культуру,
-                            // то другая была бы переполнена урожаем и не могла производить еду)
-                            Integer[] sort_cult = {0,0,0,0};
-
-                            for (int k = 0; k < anthill.farms.size(); k++) {
-                                sort_cult[k] = anthill.farms.get(k).getUsable();
-                            }
-
-                            Arrays.sort(sort_cult, Collections.reverseOrder());
-                            int index = -1;
-                            for (int k = 0; k < anthill.farms.size(); k++) {
-                                if (sort_cult[0] == anthill.farms.get(k).getUsable()) {
-                                    index = k;
-                                    break;
-                                }
-                            }
-
-                            if (index != -1) {
-                                //Если культура скоро перестанет плодоносить и исчезнет, то нужно собрать весь оставшийся урожай
-                                if (anthill.farms.get(index).getDurability() == 1) {
-                                    if (anthill.farms.get(index).getUsable() != 0) {
-                                        //Отправляем муравья собирать последние урожаи с культуры
-                                        anthill.ants.get(ant).setPurpose(anthill.farms.get(index).getCoords());
-                                        anthill.ants.get(ant).setMatrixWay(matrixWays);
-                                        anthill.ants.get(ant).WavePropagation(anthill.farms.get(index).getCoords());
-                                        anthill.ants.get(ant).setAction(Actions.GoToFarmFood.toString());
-
-                                    }
-                                } else {
-                                    //Если количество еды, которое может унести муравей больше или равно количеству урожая, то муравей идёт собирать
-                                    if (anthill.farms.get(index).getUsable() - ant_grab_object(anthill.ants.get(ant)) >= 0) {
-                                        //Отправляем собирать урожай с культуры
-                                        anthill.ants.get(ant).setPurpose(anthill.farms.get(index).getCoords());
-                                        anthill.ants.get(ant).setMatrixWay(matrixWays);
-                                        anthill.ants.get(ant).WavePropagation(anthill.farms.get(index).getCoords());
-                                        anthill.ants.get(ant).setAction(Actions.GoToFarmFood.toString());
-                                    }
-                                }
-                            }
+                        if (anthill.farms.size() != 0 && is_harvest) {
+                            //Отправляем муравья собирать урожай с культуры
+                            anthill.ants.get(ant).setPurpose(anthill.farms.get(index).getCoords());
+                            anthill.ants.get(ant).setMatrixWay(matrixWays);
+                            anthill.ants.get(ant).WavePropagation(anthill.farms.get(index).getCoords());
+                            anthill.ants.get(ant).setAction(Actions.GoToFarmFood.toString());
                         }
 
                         //Если культур нет или нет урожая, то муравей идёт собирать "нейтральную еду"
-                        if (anthill.ants.get(ant).getAction().equals(Actions.GoToFood.toString())) {
+                        if (anthill.ants.get(ant).getAction().equals(Actions.GoToFood.toString()) && neutral_food.size() != 0) {
                             anthill.ants.get(ant).setMatrixWay(matrixWays);
                             anthill.ants.get(ant).WavePropagation(food_in_wave_algorithm_id);
                             anthill.ants.get(ant).setPurpose(anthill.ants.get(ant).way.lastElement());
@@ -1035,12 +1004,18 @@ public class Controller {
                         anthill.ants.get(ant).WavePropagation(enemy_in_wave_algorithm_id);
                         //если враг в радиусе 3-х клеток от воина, то он идёт в нападение
                         if (anthill.ants.get(ant).way.size() <= 3) {
-                            if (anthill.ants.get(ant).getAction().equals(Actions.PatrolEggs.toString()))
+                            if (anthill.ants.get(ant).getAction().equals(Actions.PatrolEggs.toString())) {
                                 anthill.setGuard(false);
+                                is_anyone_guardian = false;
+                            }
 
                             anthill.ants.get(ant).setAction(Actions.Attack.toString());
                             anthill.ants.get(ant).setPurpose(anthill.ants.get(ant).way.lastElement());
                         } else {
+                            if(anthill.ants.get(ant).getAction().equals(Actions.PatrolEggs.toString())) {
+                                is_anyone_guardian = false;
+                                anthill.setGuard(false);
+                            }
                             anthill.ants.get(ant).setAction(Actions.Wait.toString());
                             for (insect enemy : enemy)
                                 if (enemy.getAction().equals(Actions.BreakAnthill.toString())) {
@@ -1053,7 +1028,7 @@ public class Controller {
                         }
                     }
 
-                    //Если меравей ожидает, то если нужен охранник яиц, то муравей идёт защищать яйца
+                    //Если муравей ожидает, то если нужен охранник яиц, то муравей идёт защищать яйца
                     //Иначе он идёт патрулировать около муравейника
                     if (anthill.ants.get(ant).getAction().equals(Actions.Wait.toString())) {
                         if (!anthill.isGuard() && !is_anyone_guardian) {
@@ -1066,6 +1041,8 @@ public class Controller {
                             anthill.ants.get(ant).setAction(Actions.PatrolAnthill.toString());
                         }
                     }
+
+
                     ant_fighter_step(anthill.ants.get(ant), anthill);
                 }
             }
@@ -1079,19 +1056,18 @@ public class Controller {
 
             //Если муравей слишком близко, то враг атакует его
             if (insect.way.size() == 1) {
-                insect.setPurpose(insect.way.lastElement());
                 insect.setAction(Actions.Attack.toString());
             }
             else
                 insect.setAction(Actions.GoToBreakAnthill.toString());
 
             //Если рядом муравья нет, то враг идёт к ближайшему муравейнику, чтобы его уничтожить
-            if (insect.getAction().equals(Actions.GoToBreakAnthill.toString())) {
+            if (insect.getAction().equals(Actions.GoToBreakAnthill.toString()) || insect.getAction().equals(Actions.BreakAnthill.toString())) {
                     insect.setMatrixWay(matrixWays);
-                    insect.WavePropagation(anthill_in_wave_algorithm_id);
-                    insect.setPurpose(insect.way.lastElement());
+                    insect.WavePropagation(anthill_in_wave_algorithm_id);;
             }
 
+            insect.setPurpose(insect.way.lastElement());
             enemy_step(insect);
         }
 
@@ -1108,7 +1084,7 @@ public class Controller {
                     node.setEffect(night);
                 }
 
-            day_night_change(anthills, neutral_food, water, materials);
+            day_night_change();
         }
 
         //Если прошёл день, наступает утро, все муравьи едят, все объекты повреждаются
@@ -1137,6 +1113,7 @@ public class Controller {
                 for (int egg = 0; egg < anthill.eggs.size(); egg++) {
                     if (!anthill.DecCount_food(anthill.eggs.get(egg).y)) {
                         anthill.eggs.removeElement(anthill.eggs.get(egg));
+                        main_log.appendText("Шаг " + step + ": умерло яйцо команды " + anthill.getAlly() + "\n");
                         egg--;
                     }
                 }
@@ -1149,9 +1126,10 @@ public class Controller {
                 }
             }
 
-            day_night_change(anthills, neutral_food, water, materials);
+            day_night_change();
         }
 
+        //Каждый шаг приближает рождение муравья из яйца,
         for (anthill anthill : anthills) {
             for (int egg = 0; egg < anthill.eggs.size(); egg++) {
                 anthill.eggs.get(egg).x--;
@@ -1219,30 +1197,75 @@ public class Controller {
         {
             for(int ant = 0; ant < anthill.ants.size(); ant++)
             {
-                if(anthill.ants.get(ant).isHungry())
-                    if(anthill.ants.get(ant).DecHealth(1))
-                    {
-                        main_log.appendText("Шаг " + step + ": " + "У " + anthill.getAlly() + " команды умер муравей\n");
-                        delete_object_image(anthill.ants.get(ant).getCoords());
-                        if(anthill.ants.get(ant).isWorker())
-                            anthill.DecHow_ant_workers();
 
-                        anthill.ants.remove(ant);
-                        ant--;
-                        anthill.DecHow_ant();
-                    }
+                if(anthill.ants.get(ant).isHungry()) {
+                    if (anthill.getCount_food() == 0) {
+                        if (anthill.ants.get(ant).DecHealth(1)) {
+                            main_log.appendText("Шаг " + step + ": " + "У " + anthill.getAlly() + " команды умер муравей\n");
+                            delete_object_image(anthill.ants.get(ant).getCoords());
+                            if (anthill.ants.get(ant).isWorker())
+                                anthill.DecHow_ant_workers();
 
-                if(anthill.ants.get(ant).isDehydration())
-                    if(anthill.ants.get(ant).DecHealth(1))
-                    {
-                        main_log.appendText("Шаг " + step + ": " + "У " + anthill.getAlly() + " команды умер муравей\n");
-                        delete_object_image(anthill.ants.get(ant).getCoords());
-                        if(anthill.ants.get(ant).isWorker())
-                            anthill.DecHow_ant_workers();
-                        anthill.ants.remove(ant);
-                        ant--;
-                        anthill.DecHow_ant();
+                            anthill.ants.remove(ant);
+                            ant--;
+                            anthill.DecHow_ant();
+                        }
                     }
+                    else
+                    {
+                        anthill.ants.get(ant).setHungry(false);
+                        anthill.DecCount_food(1);
+                    }
+                }
+
+
+                if(anthill.ants.get(ant).isDehydration()) {
+                    if(anthill.getCount_water() == 0) {
+                        if (anthill.ants.get(ant).DecHealth(1)) {
+                            main_log.appendText("Шаг " + step + ": " + "У " + anthill.getAlly() + " команды умер муравей\n");
+                            delete_object_image(anthill.ants.get(ant).getCoords());
+                            if (anthill.ants.get(ant).isWorker())
+                                anthill.DecHow_ant_workers();
+                            anthill.ants.remove(ant);
+                            ant--;
+                            anthill.DecHow_ant();
+                        }
+                    }
+                    else
+                    {
+                        anthill.ants.get(ant).setDehydration(false);
+                        anthill.DecCount_water(1);
+                    }
+                }
+
+                if(!anthill.ants.get(ant).isDehydration() && !anthill.ants.get(ant).isHungry())
+                    anthill.ants.get(ant).IncHealth(1);
+            }
+        }
+
+        if(is_night)
+        {
+            for_random = randomize(0, 140);
+            if(for_random >= 0 && for_random <= 3)
+            {
+                Vector<Point> where_to_spawn = new Vector<>();
+
+                for(int i = 0; i < Scene_blocks; i++)
+                    for(int j = 0; j < Scene_blocks; j++)
+                        if(main_array[i][j] == blocks.grass.number && (((i == 0) || (i == Scene_blocks - 1)) || ((j == 0) || (j == Scene_blocks - 1))))
+                            where_to_spawn.add(new Point(i, j));
+
+                enemy.add(new insect(randomize(min_enemy_health, max_enemy_health), randomize(min_characteristic, max_characteristic),
+                       where_to_spawn.get(randomize(0, where_to_spawn.size()))));
+                enemy.lastElement().setAction(Actions.GoToBreakAnthill.toString());
+                enemy.lastElement().setMatrixWay(matrixWays);
+                enemy.lastElement().WavePropagation(anthill_in_wave_algorithm_id);
+                enemy.lastElement().setPurpose(enemy.lastElement().way.lastElement());
+                enemy.lastElement().setSprite_cut(rotation(enemy.lastElement().getCoords().x, enemy.lastElement().getCoords().y,
+                        enemy.lastElement().way.firstElement().x, enemy.lastElement().way.firstElement().y));
+
+                filling_picture = blocks.spider.picture;
+                set_image(enemy.lastElement().getCoords(), enemy.lastElement().getSprite_cut(), blocks.spider.number, enemy_in_wave_algorithm_id);
             }
         }
 
@@ -1284,7 +1307,6 @@ public class Controller {
             if (ant.getPurpose().x == ant.way.firstElement().x && ant.getPurpose().y == ant.way.firstElement().y) {
                 if(ant.getAction().equals(Actions.GoToFarmFood.toString()))
                 {
-
                         grab_food(ant, anthill.farms);
                         for (int i = 0; i < anthill.farms.size(); i++){
                             if(anthill.farms.get(i).getCoords().x == ant.getPurpose().x && anthill.farms.get(i).getCoords().y == ant.getPurpose().y)
@@ -1562,16 +1584,30 @@ public class Controller {
                             set_image(ant.getCoords(), sprite_cut, blocks.ant_fighter.number, ant_in_wave_algorithm_id);
                             ant.setSprite_cut(sprite_cut);
                         }
-                        for(insect enemy : enemy)
+                        for(int i = 0; i < enemy.size(); i++)
                         {
-                            if(enemy.getCoords().x == ant.getPurpose().x && enemy.getCoords().y == ant.getPurpose().y)
-                                enemy.DecHealth(ant.getStrength());
+                            if(enemy.get(i).getCoords().x == ant.getPurpose().x && enemy.get(i).getCoords().y == ant.getPurpose().y) {
+                                if (enemy.get(i).DecHealth(ant.getStrength())) {
+                                    delete_object_image(enemy.get(i).getCoords());
+                                    ant.setAction(Actions.Wait.toString());
+                                    for(anthill anthill1 : anthills)
+                                        for(ant ant1 : anthill1.ants)
+                                            if(ant1.getPurpose().equals(enemy.get(i).getCoords()))
+                                                ant1.setAction(Actions.Wait.toString());
+
+                                    enemy.removeElement(enemy.get(i));
+                                }
+                                break;
+                            }
                         }
                     }
                     else {
                         sprite_cut = rotation(ant.getCoords().x, ant.getCoords().y, ant.way.firstElement().x, ant.way.firstElement().y);
                         filling_picture = blocks.ant_fighter.picture;
+
+                        if(!ant.getCoords().equals(anthill.getCoords()))
                         delete_object_image(ant.getCoords());
+
                         ant.setCoords(ant.way.firstElement());
                         ant.way.remove(0);
                         set_image(ant.getCoords(), sprite_cut, blocks.ant_fighter.number, ant_in_wave_algorithm_id);
@@ -1589,11 +1625,14 @@ public class Controller {
                     {
                         delete_object_image(ant.getCoords());
                         ant.setCoords(anthill.getCoords());
+                        anthill.setGuard(true);
                         return;
                     }
                 }
-                else
-                return;
+                else {
+                    anthill.setGuard(true);
+                    return;
+                }
             }
 
                 if(ant.getAction().equals(Actions.PatrolAnthill.toString()))
@@ -1603,8 +1642,8 @@ public class Controller {
                     for(int t = 0; t < Scene_blocks; t++)
                         for(int k = 0; k < Scene_blocks; k++)
                             if(main_array[t][k] == blocks.grass.number &&
-                                    (((t == ant.getCoords().x + 1) || (t == ant.getCoords().x - 1)) &&
-                                    ((k == ant.getCoords().y + 1) || (k == ant.getCoords().y - 1))) &&
+                                    (((t <= ant.getCoords().x + 1) && (t >= ant.getCoords().x - 1)) &&
+                                    ((k <= ant.getCoords().y + 1) && (k >= ant.getCoords().y - 1))) &&
                                     (((t <= anthill.getCoords().x + 3) && (t >= anthill.getCoords().x - 3)) &&
                                             ((k <= anthill.getCoords().y + 3) && (k >= anthill.getCoords().y - 3)) &&
                                             (((t >= anthill.getCoords().x + 2) || (t <= anthill.getCoords().x - 2)) ||
@@ -1640,13 +1679,21 @@ public class Controller {
     private void enemy_step(insect enemy)
     {
         Point sprite_cut = rotation(enemy.getCoords().x, enemy.getCoords().y, enemy.way.firstElement().x, enemy.way.firstElement().y);
+        filling_picture = blocks.spider.picture;
 
         if(enemy.getAction().equals(Actions.Attack.toString())) {
             for (anthill anthill : anthills)
                 for (ant ant : anthill.ants) {
                     if (ant.getCoords().x == enemy.getPurpose().x && ant.getCoords().y == enemy.getPurpose().y) {
+                        delete_object_image(enemy.getCoords());
+                        set_image(enemy.getCoords(), sprite_cut, blocks.spider.number, enemy_in_wave_algorithm_id);
+                        enemy.setSprite_cut(sprite_cut);
                         if (ant.DecHealth(enemy.getStrength())) {
+                            enemy.setAction(Actions.GoToBreakAnthill.toString());
                             delete_object_image(ant.getCoords());
+                            if(ant.isWorker())
+                                anthill.DecHow_ant_workers();
+                            anthill.DecHow_ant();
                             anthill.ants.removeElement(ant);
                         }
                         return;
@@ -1655,6 +1702,27 @@ public class Controller {
         }
         else
         {
+            if(enemy.getAction().equals(Actions.GoToBreakAnthill.toString()) || enemy.getAction().equals(Actions.BreakAnthill.toString()))
+            {
+                if(enemy.getPurpose().equals(enemy.way.firstElement())) {
+                    enemy.setAction(Actions.BreakAnthill.toString());
+                    for (int i = 0; i < anthills.size(); i++) {
+                        if (anthills.get(i).getCoords().equals(enemy.getPurpose())) {
+                            if(enemy.getSprite_cut() != sprite_cut)
+                            {
+                                delete_object_image(enemy.getCoords());
+                                set_image(enemy.getCoords(), sprite_cut, blocks.spider.number, enemy_in_wave_algorithm_id);
+                                enemy.setSprite_cut(sprite_cut);
+                            }
+                            if (anthills.get(i).DecDurability(enemy.getStrength())) {
+                                delete_anthill(i);
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+
             delete_object_image(enemy.getCoords());
             enemy.setCoords(enemy.way.firstElement());
             set_image(enemy.getCoords(), sprite_cut, blocks.spider.number, enemy_in_wave_algorithm_id);
@@ -1689,12 +1757,12 @@ public class Controller {
             if(ant.getPurpose().x == food.get(i).getCoords().x && ant.getPurpose().y == food.get(i).getCoords().y)
             {
                 if(food.get(i).isCulture()) {
-                    if (food.get(i).getUsable() - (ant_grab_object(ant)) > 0) {
+                    if (food.get(i).getUsable() - (ant_grab_object(ant)) >= 0) {
                         food.get(i).DecUsable(ant_grab_object(ant));
                         ant.setGrab(ant_grab_object(ant));
                     } else {
-                        ant.setGrab(food.get(i).getUsable() - 1);
-                        food.get(i).DecUsable(food.get(i).getUsable() - 1);
+                        ant.setGrab(food.get(i).getUsable());
+                        food.get(i).DecUsable(food.get(i).getUsable());
                     }
                 }
                 else
@@ -1771,6 +1839,7 @@ return new Point(0, 0);
 
             main_array[coords.x][coords.y] = blocks.grass.number;
             matrixWays[coords.x][coords.y] = empty_place_in_wave_algorithm_id;
+            if(!Empty_place.contains(coords))
             Empty_place.add(new Point(coords.x, coords.y));
 
             break;
@@ -1935,16 +2004,13 @@ private void print_out_anthill(anthill anthill, TextArea area, ImageView imageVi
             if(anthill.farms.get(i).getId() == blocks.infected_plant.number) {
                 area.appendText("x: " + anthill.farms.get(i).getCoords().x + " y: " + anthill.farms.get(i).getCoords().y);
                 farms++;
-            }
-
-            if (farms == anthill.getCount_milk_farms()) {
-                area.appendText("\n");
-                break;
-            }
-            else {
-                if(flag)
-                area.appendText(" ; ");
-                flag = false;
+                if(farms == anthill.getCount_milk_farms()) {
+                    area.appendText("\n");
+                    break;
+                }
+                else {
+                    area.appendText(" ; ");
+                }
             }
         }
     }
@@ -1954,22 +2020,17 @@ private void print_out_anthill(anthill anthill, TextArea area, ImageView imageVi
 
     area.appendText("Ферма грибов: ");
     farms = 0;
-    flag = true;
     if(anthill.farms.size() != 0) {
         for (int i = 0; i < anthill.farms.size(); i++) {
             if(anthill.farms.get(i).getId() == blocks.mushrooms.number) {
                 area.appendText("x: " + anthill.farms.get(i).getCoords().x + " y: " + anthill.farms.get(i).getCoords().y);
                 farms++;
-            }
-
-            if (farms == anthill.farms.size()) {
-                area.appendText("\n");
-                break;
-            }
-            else {
-                if(flag) {
+                if(farms == anthill.getCount_mushrooms_farms()) {
+                    area.appendText("\n");
+                    break;
+                }
+                else {
                     area.appendText(" ; ");
-                    flag = false;
                 }
             }
         }
@@ -2038,9 +2099,13 @@ private void print_out_enemy(insect insect, TextArea area, ImageView imageView)
         area.appendText("   Враг   \n");
 
         if(insect.getAction().equals(Actions.Attack.toString()))
-            main_log.appendText("Сражается с муравьём: x: " + insect.getPurpose().x + " y: " + insect.getPurpose().y + "\n");
+            area.appendText("Сражается с муравьём: x: " + insect.getPurpose().x + " y: " + insect.getPurpose().y + "\n");
         else
-            main_log.appendText("Идёт ломать муравейник: x: " + insect.getPurpose().x + " y: " + insect.getPurpose().y + "\n");
+            if(insect.getAction().equals(Actions.GoToBreakAnthill.toString()))
+                area.appendText("Идёт ломать муравейник: x: " + insect.getPurpose().x + " y: " + insect.getPurpose().y + "\n");
+            else
+                if(insect.getAction().equals(Actions.BreakAnthill.toString()))
+                    area.appendText("Ломает муравейник: x: " + insect.getPurpose().x + " y: " + insect.getPurpose().y + "\n");
 
         area.appendText("Координаты: " + "x: " + insect.getCoords().x + " y: " + insect.getCoords().y + "\n");
         area.appendText("Здоровье: " + insect.getHealth() + "/" + insect.getMaxHealth() + "\n");
@@ -2090,7 +2155,7 @@ private void print_out_food(food food, TextArea area, ImageView imageView)
         area.appendText("Запасы: " + food.getUsable() + "/" + food.getMaxUsable() + "\n");
 
         if(food.isCulture())
-            area.appendText("Окультуренное\n");
+            area.appendText("Окультуренное: " + "команда " + food.getAlly() + "\n");
         else
         area.appendText("Дикое\n");
 
@@ -2103,34 +2168,30 @@ private void print_out_food(food food, TextArea area, ImageView imageView)
 
     }
 
-    private void day_night_change(Vector<anthill> anthills, Vector<food> neutral_food, Vector<objects> water, Vector<objects> materials)
+    private void day_night_change()
     {
         //Муравейник немного ломается, если его прочность равна 0, то он уничтожается
         for (int i = 0; i < anthills.size(); i++) {
             if(anthills.get(i).DecDurability(Dec_anthill_durability))
             {
-                main_log.appendText("Шаг " + step + ": " + "Муравейник сломался у комaнды " + anthills.get(i).getAlly() + "\n");
-                for(int ant = 0; ant < anthills.get(i).ants.size();)
-                {
-                    delete_object_image(anthills.get(i).ants.get(ant).getCoords());
-                    anthills.get(i).ants.remove(ant);
-                }
-                for (int j = 0; j < anthills.get(i).farms.size();)
-                {
-                    delete_object_image(anthills.get(i).farms.get(j).getCoords());
-                    anthills.get(i).farms.remove(j);
-                }
-                delete_object_image(anthills.get(i).getCoords());
-                anthills.remove(i);
+                delete_anthill(i);
                 i--;
                 continue;
             }
 
+            //Ферма ломается. Если она сломалась, то она исчезает с карты
             for (int j = 0; j < anthills.get(i).farms.size(); j++) {
                 if(anthills.get(i).farms.get(j).DecDurability(Dec_objects_durability))
                 {
                     delete_object_image(anthills.get(i).farms.get(j).getCoords());
+
+                    if(anthills.get(i).farms.get(j).getId() == blocks.mushrooms.number)
+                        anthills.get(i).DecCount_mushrooms_farms();
+                    else
+                        anthills.get(i).DecCount_milk_farms();
+
                     anthills.get(i).farms.removeElement(anthills.get(i).farms.get(j));
+
                     j--;
                 }
             }
@@ -2162,5 +2223,70 @@ private void print_out_food(food food, TextArea area, ImageView imageView)
                 i--;
             }
         }
+    }
+
+    private void delete_anthill(int i)
+    {
+        main_log.appendText("Шаг " + step + ": " + "Муравейник сломался у комaнды " + anthills.get(i).getAlly() + "\n");
+        for(int ant = 0; ant < anthills.get(i).ants.size();)
+        {
+            delete_object_image(anthills.get(i).ants.get(ant).getCoords());
+            anthills.get(i).ants.remove(ant);
+        }
+        for (int j = 0; j < anthills.get(i).farms.size();)
+        {
+            delete_object_image(anthills.get(i).farms.get(j).getCoords());
+            anthills.get(i).farms.remove(j);
+        }
+        delete_object_image(anthills.get(i).getCoords());
+        anthills.remove(i);
+    }
+
+    private void set_map()
+    {
+        for(int i = 0; i < Scene_blocks; i++)
+            for(int j = 0; j < Scene_blocks; j++)
+            {
+                if(map[i][j] == blocks.grass.number)
+                {
+                    delete_object_image(new Point(i, j));
+                }
+                else
+                    if(map[i][j] == blocks.water.number)
+                    {
+                        filling_picture = blocks.water.picture;
+                        set_image(new Point(i, j), new Point(0, 0), blocks.water.number, empty_place_in_wave_algorithm_id);
+                    }
+                    else
+                        if(map[i][j] == blocks.apple.number)
+                        {
+                            filling_picture = blocks.apple.picture;
+                            set_image(new Point(i, j), new Point(0, 0), blocks.apple.number, empty_place_in_wave_algorithm_id);
+                        }
+                        else
+                        if(map[i][j] == blocks.mushrooms.number)
+                        {
+                            filling_picture = blocks.mushrooms.picture;
+                            set_image(new Point(i, j), new Point(0, 0), blocks.mushrooms.number, empty_place_in_wave_algorithm_id);
+                        }
+                        else
+                        if(map[i][j] == blocks.stick.number)
+                        {
+                            filling_picture = blocks.stick.picture;
+                            set_image(new Point(i, j), new Point(0, 0), blocks.stick.number, empty_place_in_wave_algorithm_id);
+                        }
+                        else
+                        if(map[i][j] == blocks.plant.number)
+                        {
+                            filling_picture = blocks.plant.picture;
+                            set_image(new Point(i, j), new Point(0, 0), blocks.plant.number, empty_place_in_wave_algorithm_id);
+                        }
+                        else
+                        if(map[i][j] == blocks.anthill.number)
+                        {
+                            filling_picture = blocks.anthill.picture;
+                            set_image(new Point(i, j), new Point(0, 0), blocks.anthill.number, empty_place_in_wave_algorithm_id);
+                        }
+            }
     }
 }

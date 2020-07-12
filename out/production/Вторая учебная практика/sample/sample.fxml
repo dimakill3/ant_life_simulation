@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -29,11 +30,6 @@
             <Image url="@images/grass.jpg" />
          </image>
       </ImageView>
-      <ImageView fx:id="image_insect_flower" fitHeight="45.0" fitWidth="45.0" layoutX="964.0" layoutY="685.0" onMouseClicked="#ChooseInsectFlower" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="175.0" AnchorPane.rightAnchor="91.0">
-         <image>
-            <Image url="@images/infected_plant.png" />
-         </image>
-      </ImageView>
       <ImageView fx:id="image_flower" fitHeight="45.0" fitWidth="45.0" layoutX="918.0" layoutY="680.0" onMouseClicked="#ChooseFlower" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="175.0" AnchorPane.rightAnchor="137.0">
          <image>
             <Image url="@images/plant.png" />
@@ -49,7 +45,7 @@
             <Image url="@images/anthill.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="image_mushrooms" fitHeight="45.0" fitWidth="45.0" layoutX="1010.0" layoutY="630.0" onMouseClicked="#ChooseMushrooms" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="225.0" AnchorPane.rightAnchor="45.0">
+      <ImageView fx:id="image_mushrooms" fitHeight="45.0" fitWidth="45.0" layoutX="1514.0" layoutY="680.0" onMouseClicked="#ChooseMushrooms" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="175.0" AnchorPane.rightAnchor="91.0">
          <image>
             <Image url="@images/mushrooms.png" />
          </image>
@@ -101,9 +97,8 @@
             <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <Button fx:id="exit_simulation_button" layoutX="938.0" layoutY="127.0" mnemonicParsing="false" onMouseClicked="#ExitSimulationButtonClick" text="Завершить симуляцию" visible="false" AnchorPane.rightAnchor="25.0" />
-      <Button fx:id="auto_mode_button" layoutX="996.0" layoutY="93.0" mnemonicParsing="false" onMouseClicked="#SetSimulationAutoMod" text="Авто мод" visible="false" AnchorPane.rightAnchor="40.0" />
-      <Button fx:id="step_button" layoutX="945.0" layoutY="93.0" mnemonicParsing="false" onMouseClicked="#StepButtonClick" text="Шаг" visible="false" AnchorPane.rightAnchor="118.0" />
+      <Button fx:id="exit_simulation_button" layoutX="938.0" layoutY="127.0" mnemonicParsing="false" onMouseClicked="#ExitSimulationButtonClick" text="Завершить симуляцию" visible="false" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="130.0" />
+      <Button fx:id="step_button" layoutX="1540.0" layoutY="93.0" mnemonicParsing="false" onMouseClicked="#StepButtonClick" text="Шаг" visible="false" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="90.0" />
       <TextArea fx:id="main_log" editable="false" layoutX="8.0" layoutY="695.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1115.0" />
       <ImageView fx:id="first_print_image" fitHeight="45.0" fitWidth="45.0" layoutX="8.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
       <TextArea fx:id="first_print_log" editable="false" layoutX="65.0" layoutY="18.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="5.0" />
@@ -114,5 +109,7 @@
       <ImageView fx:id="fourth_print_image" fitHeight="45.0" fitWidth="45.0" layoutX="255.0" layoutY="210.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.leftAnchor="260.0" AnchorPane.topAnchor="210.0" />
       <TextArea fx:id="third_print_log" editable="false" layoutX="283.0" layoutY="18.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.leftAnchor="310.0" AnchorPane.topAnchor="5.0" />
       <TextArea fx:id="fourth_print_log" editable="false" layoutX="310.0" layoutY="210.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.leftAnchor="310.0" AnchorPane.topAnchor="210.0" />
+      <Spinner fx:id="Spinner_how_begin_ants" editable="true" layoutX="1471.0" layoutY="540.0" visible="false" AnchorPane.bottomAnchor="335.0" AnchorPane.rightAnchor="33.0" />
+      <Label fx:id="SpinnerLabel" layoutX="1467.0" layoutY="508.0" prefHeight="25.0" prefWidth="185.0" text="Начальное количество муравьёв" visible="false" AnchorPane.bottomAnchor="367.0" AnchorPane.rightAnchor="10.0" />
    </children>
 </AnchorPane>

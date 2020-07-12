@@ -227,7 +227,7 @@ public class anthill extends objects{
         this.count_mushrooms_farms--;
     }
 
-    private void add_new_ant()
+    public void add_new_ant()
     {
         int intellect;
         int strength;
