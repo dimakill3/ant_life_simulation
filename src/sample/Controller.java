@@ -563,7 +563,7 @@ public class Controller {
 
     void Step()
     {
-        int for_random = 0;
+        int for_random;
 
         //Для каждого объекта, который может заспавниться, есть шанс спавна
         //яблоко
@@ -1064,7 +1064,7 @@ public class Controller {
             //Если рядом муравья нет, то враг идёт к ближайшему муравейнику, чтобы его уничтожить
             if (insect.getAction().equals(Actions.GoToBreakAnthill.toString()) || insect.getAction().equals(Actions.BreakAnthill.toString())) {
                     insect.setMatrixWay(matrixWays);
-                    insect.WavePropagation(anthill_in_wave_algorithm_id);;
+                    insect.WavePropagation(anthill_in_wave_algorithm_id);
             }
 
             insect.setPurpose(insect.way.lastElement());
@@ -2013,6 +2013,8 @@ private void print_out_anthill(anthill anthill, TextArea area, ImageView imageVi
                 }
             }
         }
+        if(farms == 0)
+            area.appendText("---\n");
     }
     else
         area.appendText("---\n");
@@ -2034,6 +2036,8 @@ private void print_out_anthill(anthill anthill, TextArea area, ImageView imageVi
                 }
             }
         }
+        if(farms == 0)
+            area.appendText("---\n");
     }
     else
         area.appendText("---\n");
