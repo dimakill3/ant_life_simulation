@@ -382,6 +382,13 @@ public class Controller {
 
         set_map();
 
+        for (Node node: main_scene.getChildren())
+        {
+            node.setEffect(null);
+        }
+
+        main_scene.setEffect(null);
+
         Empty_place.clear();
         neutral_food.clear();
         water.clear();
@@ -873,8 +880,7 @@ public class Controller {
                                                     work.y++;
                                                     //Если отправили муравья на работу, то завершаем поиск работы
                                                     break;
-                                                } else
-                                                    continue;
+                                                }
                                             }
                                         }
                                     }
