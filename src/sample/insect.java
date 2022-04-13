@@ -1,5 +1,7 @@
 package sample;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.*;
 import java.util.Vector;
 
@@ -15,8 +17,7 @@ public class insect {
     private int[][] matrixWay;
     private Point sprite_cut;
 
-    insect(int health, int strength, Point coords)
-    {
+    insect(int health, int strength, Point coords) {
         this.MaxHealth = health;
         this.health = health;
         this.strength = strength;
@@ -28,13 +29,11 @@ public class insect {
         this.matrixWay = new int[Controller.Scene_blocks][Controller.Scene_blocks];
     }
 
-    public void IncMaxHealth(int MaxHealth)
-    {
+    public void IncMaxHealth(int MaxHealth) {
         this.MaxHealth += MaxHealth;
     }
 
-    public void DecMaxHealth(int MaxHealth)
-    {
+    public void DecMaxHealth(int MaxHealth) {
         this.MaxHealth -= MaxHealth;
     }
 
@@ -49,10 +48,7 @@ public class insect {
     public boolean DecHealth(int health) {
         this.health -= health;
 
-        if(this.health <= 0)
-            return true;
-        else
-            return false;
+        return this.health <= 0;
     }
 
     public void IncHealth(int health) {
@@ -100,7 +96,7 @@ public class insect {
         return sprite_cut;
     }
 
-    public void setMatrixWay(int[][] matrixWay) {
+    public void setMatrixWay(int[] @NotNull [] matrixWay) {
         this.matrixWay = matrixWay.clone();
         for(int i = 0; i < this.matrixWay.length; i++)
             this.matrixWay[i] = matrixWay[i].clone();

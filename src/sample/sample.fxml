@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane fx:id="main_window" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1650.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<AnchorPane fx:id="main_window" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1650.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <Button fx:id="start_simulation_button" layoutX="840.0" layoutY="50.0" mnemonicParsing="false" onAction="#Start_Simulation_Button_Click" text="Запуск симуляции" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="50.0" />
       <Button fx:id="build_map_button" layoutX="835.0" layoutY="725.0" mnemonicParsing="false" onAction="#Begin_Changes_Button_Click" text="Редактировать поле" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="40.0" />
@@ -97,7 +97,7 @@
             <RowConstraints minHeight="45.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <Button fx:id="exit_simulation_button" layoutX="938.0" layoutY="127.0" mnemonicParsing="false" onMouseClicked="#ExitSimulationButtonClick" text="Завершить симуляцию" visible="false" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="130.0" />
+      <Button fx:id="exit_simulation_button" layoutX="1480.0" layoutY="171.0" mnemonicParsing="false" onMouseClicked="#ExitSimulationButtonClick" text="Завершить симуляцию" visible="false" AnchorPane.rightAnchor="27.0" AnchorPane.topAnchor="171.0" />
       <Button fx:id="step_button" layoutX="1540.0" layoutY="93.0" mnemonicParsing="false" onMouseClicked="#StepButtonClick" text="Шаг" visible="false" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="90.0" />
       <TextArea fx:id="main_log" editable="false" layoutX="8.0" layoutY="695.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1115.0" />
       <ImageView fx:id="first_print_image" fitHeight="45.0" fitWidth="45.0" layoutX="8.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
@@ -111,5 +111,7 @@
       <TextArea fx:id="fourth_print_log" editable="false" layoutX="310.0" layoutY="210.0" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.leftAnchor="310.0" AnchorPane.topAnchor="210.0" />
       <Spinner fx:id="Spinner_how_begin_ants" editable="true" layoutX="1471.0" layoutY="540.0" visible="false" AnchorPane.bottomAnchor="335.0" AnchorPane.rightAnchor="33.0" />
       <Label fx:id="SpinnerLabel" layoutX="1467.0" layoutY="508.0" prefHeight="25.0" prefWidth="185.0" text="Начальное количество муравьёв" visible="false" AnchorPane.bottomAnchor="367.0" AnchorPane.rightAnchor="10.0" />
+      <Button id="EnableAutostepButton" fx:id="enable_autostep_button" layoutX="1492.0" layoutY="130.0" mnemonicParsing="false" onMouseClicked="#EnableAutostepButtonClick" text="Включить автошаг" visible="false" />
+      <Button id="DisableAutostepButton" fx:id="disable_autostep_button" layoutX="1488.0" layoutY="130.0" mnemonicParsing="false" onMouseClicked="#DisableAutostepButtonClick" text="Выключить автошаг" visible="false" />
    </children>
 </AnchorPane>

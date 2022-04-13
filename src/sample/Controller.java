@@ -1,5 +1,6 @@
 package sample;
 
+// region подключение библиотек
 import java.awt.*;
 import java.net.URL;
 import java.util.Arrays;
@@ -7,7 +8,10 @@ import java.util.Collections;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -26,7 +30,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
-
+import sample.images.StepRunner;
+// endregion
 
 public class Controller {
 
@@ -115,6 +120,8 @@ public class Controller {
 
     private boolean is_night;
     private int is_rain;
+    private Service service;
+    private boolean autostep;
 
     @FXML
     private ResourceBundle resources;
@@ -199,6 +206,12 @@ public class Controller {
 
     @FXML
     private Label SpinnerLabel;
+
+    @FXML
+    private Button enable_autostep_button;
+
+    @FXML
+    private Button disable_autostep_button;
 
     @FXML
     void ChooseApple(MouseEvent event) {
@@ -313,6 +326,7 @@ public class Controller {
 
         exit_simulation_button.setVisible(true);
         step_button.setVisible(true);
+        enable_autostep_button.setVisible(true);
 
         is_simulation_in_process = true;
         int anthill_index = 0;
@@ -388,6 +402,8 @@ public class Controller {
 
         exit_simulation_button.setVisible(false);
         step_button.setVisible(false);
+        disable_autostep_button.setVisible(false);
+        enable_autostep_button.setVisible(false);
         main_log.clear();
         clear_logs();
         day_and_step.setText("");
@@ -395,17 +411,49 @@ public class Controller {
 
     @FXML
     void StepButtonClick(MouseEvent event) {
-        Step();
+
+        OneStep();
+
+/*        Step();
         clear_logs();
         if (anthills.size() == 0) {
             Alert error = new Alert(Alert.AlertType.ERROR, "Муравейников больше нет. Симуляция закончена!");
             error.showAndWait();
             ExitSimulationButtonClick(event);
+        }*/
+    }
+
+    public void OneStep()
+    {
+        Step();
+        clear_logs();
+        if (anthills.size() == 0) {
+            Alert error = new Alert(Alert.AlertType.ERROR, "Муравейников больше нет. Симуляция закончена!");
+            error.showAndWait();
+
+            step_button.setVisible(false);
+            disable_autostep_button.setVisible(false);
+            enable_autostep_button.setVisible(false);
         }
     }
 
     @FXML
+    void DisableAutostepButtonClick(MouseEvent event) {
+        enable_autostep_button.setVisible(true);
+        disable_autostep_button.setVisible(false);
+        autostep = false;
+    }
+
+    @FXML
+    void EnableAutostepButtonClick(MouseEvent event) {
+        enable_autostep_button.setVisible(false);
+        disable_autostep_button.setVisible(true);
+        autostep = true;
+    }
+
+    @FXML
     void initialize() {
+        autostep = false;
         night.setChoke(0);
         night.setRadius(100);
         night.setBlurType(BlurType.THREE_PASS_BOX);
@@ -425,6 +473,30 @@ public class Controller {
                 main_scene.add(new ImageView(filling_picture), y, x);
             }
         }
+
+        service = new Service() {
+            @Override
+            protected Task createTask() {
+                return new Task() {
+                    @Override
+                    protected Object call() throws Exception {
+                        while (true) {
+                            System.out.println("В цикле autostep =" + autostep);
+                            if (autostep) {
+                                //System.out.println("Шаг автошага");
+                                Thread.sleep(1000);
+                                Platform.runLater(Controller.this::OneStep);
+                            }
+
+                        }
+                        //return null;
+                    }
+                };
+            }
+        };
+        service.start();
+
+        //stepThread = new Thread(new StepRunner(this));
     }
 
     void change_picture() {
@@ -550,7 +622,7 @@ public class Controller {
         fourth_print_log.clear();
     }
 
-    void Step() {
+    public void Step() {
         int for_random;
 
         //Для каждого объекта, который может заспавниться, есть шанс спавна
@@ -1226,7 +1298,7 @@ public class Controller {
         day_and_step.setText("День " + day + " Шаг " + step);
     }
 
-    public int ant_grab_object(ant ant) {
+    public int ant_grab_object(@NotNull ant ant) {
         return (ant.getStrength() / 2) + (ant.getStrength() % 2);
     }
 
@@ -1252,7 +1324,7 @@ public class Controller {
     }
 
     //Ход муравья рабочего
-    private void ant_worker_step(ant ant, anthill anthill) {
+    private void ant_worker_step(@NotNull ant ant, anthill anthill) {
         //Если перед муравьём его цель, то он собирает её
         if (ant.getPurpose().x == ant.way.firstElement().x && ant.getPurpose().y == ant.way.firstElement().y) {
             if (ant.getAction().equals(Actions.GoToFarmFood.toString())) {
@@ -1494,7 +1566,7 @@ public class Controller {
     }
 
     //Ход муравья воина
-    private void ant_fighter_step(ant ant, anthill anthill) {
+    private void ant_fighter_step(@NotNull ant ant, anthill anthill) {
         //Если на карте есть враги, то проверяем, не находятся ли они рядом с воинами
         if (ant.getAction().equals(Actions.Attack.toString())) {
             Point sprite_cut;
@@ -1594,7 +1666,7 @@ public class Controller {
     }
 
     //Ход вражеского насекомого
-    private void enemy_step(insect enemy) {
+    private void enemy_step(@NotNull insect enemy) {
         Point sprite_cut = rotation(enemy.getCoords().x, enemy.getCoords().y, enemy.way.firstElement().x, enemy.way.firstElement().y);
         filling_picture = blocks.spider.picture;
 
@@ -1644,7 +1716,7 @@ public class Controller {
     }
 
     //Муравей берёт воду или материалы
-    private void grab_materials_or_water(ant ant, Vector<objects> materials_or_water) {
+    private void grab_materials_or_water(ant ant, @NotNull Vector<objects> materials_or_water) {
         for (int i = 0; i < materials_or_water.size(); i++)
             if (ant.getPurpose().x == materials_or_water.get(i).getCoords().x && ant.getPurpose().y == materials_or_water.get(i).getCoords().y) {
                 if (materials_or_water.get(i).getDurability() - (ant_grab_object(ant)) > 0) {
@@ -1663,7 +1735,7 @@ public class Controller {
     }
 
     //Муравей берёт еду
-    private void grab_food(ant ant, Vector<food> food) {
+    private void grab_food(ant ant, @NotNull Vector<food> food) {
         for (int i = 0; i < food.size(); i++)
             if (ant.getPurpose().x == food.get(i).getCoords().x && ant.getPurpose().y == food.get(i).getCoords().y) {
                 if (food.get(i).isCulture()) {
@@ -1769,7 +1841,7 @@ public class Controller {
             }
     }
 
-    private void print_out_ant(ant ant, TextArea area, ImageView imageView) {
+    private void print_out_ant(@NotNull ant ant, @NotNull TextArea area, @NotNull ImageView imageView) {
         imageView.setVisible(true);
         area.setVisible(true);
 
@@ -1838,7 +1910,7 @@ public class Controller {
             area.appendText("напоен\n");
     }
 
-    private void print_out_anthill(anthill anthill, TextArea area, ImageView imageView) {
+    private void print_out_anthill(@NotNull anthill anthill, @NotNull TextArea area, @NotNull ImageView imageView) {
         first_print_image.setViewport(null);
         area.setVisible(true);
         imageView.setVisible(true);
@@ -1959,7 +2031,7 @@ public class Controller {
         area.appendText("Координаты: " + "x: " + anthill.getCoords().x + " y: " + anthill.getCoords().y + "\n");
     }
 
-    private void print_out_enemy(insect insect, TextArea area, ImageView imageView) {
+    private void print_out_enemy(@NotNull insect insect, @NotNull TextArea area, @NotNull ImageView imageView) {
         imageView.setVisible(true);
         area.setVisible(true);
 
@@ -1979,7 +2051,7 @@ public class Controller {
         area.appendText("Сила: " + insect.getStrength() + "\n");
     }
 
-    private void print_out_objects(objects object, TextArea area, ImageView imageView) {
+    private void print_out_objects(@NotNull objects object, @NotNull TextArea area, @NotNull ImageView imageView) {
         first_print_image.setViewport(null);
         area.setVisible(true);
         imageView.setVisible(true);
@@ -2000,7 +2072,7 @@ public class Controller {
 
     }
 
-    private void print_out_food(food food, TextArea area, ImageView imageView) {
+    private void print_out_food(@NotNull food food, @NotNull TextArea area, @NotNull ImageView imageView) {
         first_print_image.setViewport(null);
         area.setVisible(true);
         imageView.setVisible(true);

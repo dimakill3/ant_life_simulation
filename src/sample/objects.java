@@ -8,8 +8,7 @@ public class objects {
     private int id;
     private Point coords;
 
-    public objects(Point coords, int max_durability, int id)
-    {
+    public objects(Point coords, int max_durability, int id) {
         this.MaxDurability = max_durability;
         this.durability = max_durability;
         this.id = id;
@@ -27,8 +26,7 @@ public class objects {
             this.durability += durability;
     }
 
-    public boolean DecDurability(int durability)
-    {
+    public boolean DecDurability(int durability) {
         if(this.durability - durability <= 0) {
             this.durability = 0;
             return true;
