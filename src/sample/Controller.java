@@ -122,6 +122,7 @@ public class Controller {
     private int is_rain;
     private Service service;
     private boolean autostep;
+    private boolean isSimulationStarted;
 
     @FXML
     private ResourceBundle resources;
@@ -377,10 +378,57 @@ public class Controller {
 
         for (int i = 0; i < map.length; i++)
             map[i] = main_array[i].clone();
+
+
+        isSimulationStarted = true;
+        service = new Service() {
+            @Override
+            protected Task createTask() {
+                return new Task() {
+                    @Override
+                    protected Object call() throws Exception {
+                        while (isSimulationStarted) {
+                            System.out.println("В цикле autostep =" + autostep);
+                            if (autostep) {
+                                Thread.sleep(1000);
+                                Platform.runLater(Controller.this::OneStep);
+                            }
+                        }
+                        return null;
+                    }
+                };
+            }
+        };
+        service.start();
     }
 
     @FXML
     void ExitSimulationButtonClick(MouseEvent event) {
+        GameOver();
+    }
+
+    @FXML
+    void StepButtonClick(MouseEvent event) {
+
+        OneStep();
+    }
+
+    public void OneStep() {
+        Step();
+        clear_logs();
+        if (anthills.size() == 0) {
+            Alert error = new Alert(Alert.AlertType.ERROR, "Муравейников больше нет. Симуляция закончена!");
+            error.showAndWait();
+
+            GameOver();
+        }
+    }
+
+    void GameOver() {
+        isSimulationStarted = false;
+        autostep = false;
+        service.cancel();
+        service = null;
         start_simulation_button.setVisible(true);
         build_map_button.setVisible(true);
 
@@ -407,34 +455,6 @@ public class Controller {
         main_log.clear();
         clear_logs();
         day_and_step.setText("");
-    }
-
-    @FXML
-    void StepButtonClick(MouseEvent event) {
-
-        OneStep();
-
-/*        Step();
-        clear_logs();
-        if (anthills.size() == 0) {
-            Alert error = new Alert(Alert.AlertType.ERROR, "Муравейников больше нет. Симуляция закончена!");
-            error.showAndWait();
-            ExitSimulationButtonClick(event);
-        }*/
-    }
-
-    public void OneStep()
-    {
-        Step();
-        clear_logs();
-        if (anthills.size() == 0) {
-            Alert error = new Alert(Alert.AlertType.ERROR, "Муравейников больше нет. Симуляция закончена!");
-            error.showAndWait();
-
-            step_button.setVisible(false);
-            disable_autostep_button.setVisible(false);
-            enable_autostep_button.setVisible(false);
-        }
     }
 
     @FXML
@@ -473,30 +493,6 @@ public class Controller {
                 main_scene.add(new ImageView(filling_picture), y, x);
             }
         }
-
-        service = new Service() {
-            @Override
-            protected Task createTask() {
-                return new Task() {
-                    @Override
-                    protected Object call() throws Exception {
-                        while (true) {
-                            System.out.println("В цикле autostep =" + autostep);
-                            if (autostep) {
-                                //System.out.println("Шаг автошага");
-                                Thread.sleep(1000);
-                                Platform.runLater(Controller.this::OneStep);
-                            }
-
-                        }
-                        //return null;
-                    }
-                };
-            }
-        };
-        service.start();
-
-        //stepThread = new Thread(new StepRunner(this));
     }
 
     void change_picture() {
